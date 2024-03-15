@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,9 +44,6 @@ public class User {
 	private String userMobNo;
 
 	@Column
-	private String address;
-
-	@Column
 	private String status;
 
 	@ManyToMany(fetch = FetchType.EAGER)
@@ -72,7 +70,50 @@ public class User {
 	@Column
 	private Integer otp;
 
+	// REGISTRATION FIELDS --->
+	private String fullName;
 
+	private Integer age;
+
+	private String gender;
+
+	@Temporal(TemporalType.DATE)
+	private Date dateOfBirth;
+
+	private String nomineeFullName;
+
+	private Integer nomineeAge;
+
+	private String nomineeGender;
+
+	private String nomineeMobileNumber;
+
+	@Temporal(TemporalType.DATE)
+	private Date nomineeDateOfBirth;
+
+	private String photo;
+
+	private String address;
+
+	private String otherAddress;
+
+	private String villageAddress;
+
+	private String occupation;
+
+	private String officeAddress;
+
+	private String panNo;
+
+	private String aadhaarCardNo;
+
+	private String propertyType;
+
+	private Double cibilScore;
+
+	private String referenceName;
+
+	private String referenceMobile;
 
 	public User(String username, String email, String password, String userMobNo, String address, String status, Set<Role> roles) {
 		this.username = username;

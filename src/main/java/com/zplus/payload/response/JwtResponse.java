@@ -11,8 +11,12 @@ public class JwtResponse {
 
 	private String status;
 	private String roles;
+	private String message;
+	private Integer responseCode;
+	private Boolean flag;
 
-	public JwtResponse(String token, String refreshToken, Long id, String email,String userMobNo,String status, String roles) {
+	public JwtResponse(String token, String refreshToken, Long id, String email,String userMobNo,
+					   String status, String roles,String message,Integer responseCode,Boolean flag) {
 		this.token = token;
 		this.refreshToken = refreshToken;
 		this.id = id;
@@ -20,6 +24,9 @@ public class JwtResponse {
 		this.userMobNo = userMobNo;
 		this.status = status;
 		this.roles = roles;
+		this.message = message;
+		this.responseCode = responseCode;
+		this.flag = flag;
 	}
 
 
@@ -86,5 +93,27 @@ public class JwtResponse {
 		return roles;
 	}
 
+	public String getMessage() {
+		return message;
+	}
 
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public Integer getResponseCode() {
+		return responseCode;
+	}
+
+	public void setResponseCode(Integer responseCode) {
+		this.responseCode = responseCode;
+	}
+
+	public Boolean getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Boolean flag) {
+		this.flag = flag;
+	}
 }

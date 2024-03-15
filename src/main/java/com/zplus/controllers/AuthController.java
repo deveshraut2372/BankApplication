@@ -82,6 +82,28 @@ public class AuthController {
         return ResponseEntity.badRequest().body(mainResDto);
       }
     }
+
+    String message;
+    Integer responseCode;
+    Boolean flag;
+
+    if(userRepository.existsByUserMobNo(loginRequest.getUserMobNo())){
+      if (encoder.matches(loginRequest.getPassword(),dPassword)){
+        System.out.println("login successfully");
+        message = "login successfully";
+        responseCode = HttpStatus.OK.value();
+        flag = true;
+      }else {
+        message = "Invalid password ";
+        responseCode = HttpStatus.BAD_REQUEST.value();
+        flag = false;
+      }
+    }else {
+      message = "mobile no. not found";
+      responseCode = HttpStatus.BAD_REQUEST.value();
+      flag = false;
+    }
+
     Authentication authentication = authenticationManager
         .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserMobNo(), loginRequest.getPassword()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -93,19 +115,30 @@ public class AuthController {
 
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
     return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-            userDetails.getEmail(), userDetails.getUserMobNo(), userDetails.getStatus(), role));
+            userDetails.getEmail(), userDetails.getUserMobNo(), userDetails.getStatus(), role,message,responseCode,flag));
   }
 
   @PostMapping("/registration")
   public ResponseEntity registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    MainResDto mainResDto = new MainResDto();
 
     if (userRepository.existsByUserMobNo(signUpRequest.getUserMobNo())) {
-      return ResponseEntity.badRequest().body(new MessageResponse("Error: mobileNo is already taken!"));
+      mainResDto.setMessage("Error: mobileNo is already taken!");
+      mainResDto.setResponseCode(HttpStatus.BAD_REQUEST.value());
+      mainResDto.setFlag(false);
+      return new ResponseEntity(mainResDto, HttpStatus.BAD_REQUEST);
     }
 
     if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-      return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+      mainResDto.setMessage("Error: email is already taken!");
+      mainResDto.setResponseCode(HttpStatus.BAD_REQUEST.value());
+      mainResDto.setFlag(false);
+      return new ResponseEntity(mainResDto, HttpStatus.BAD_REQUEST);
     }
+
+    String message;
+    Integer responseCode;
+    Boolean flag;
 
     User user =new User();
     user.setEmail(signUpRequest.getEmail());
@@ -121,6 +154,15 @@ public class AuthController {
           .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
       user.setRoleId(2);
       roles.add(userRole);
+      user.setRoles(roles);
+      message = "user registered successfully";
+      responseCode = HttpStatus.OK.value();
+      flag = true;
+      mainResDto.setMessage(message);
+      mainResDto.setResponseCode(responseCode);
+      mainResDto.setFlag(flag);
+      this.userRepository.save(user);
+      return new ResponseEntity(mainResDto, HttpStatus.OK);
     } else {
         switch (strRoles) {
         case "admin":
@@ -128,6 +170,13 @@ public class AuthController {
               .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(adminRole);
           user.setRoleId(1);
+
+          message = "admin registered successfully";
+          responseCode = HttpStatus.OK.value();
+          flag = true;
+          mainResDto.setMessage(message);
+          mainResDto.setResponseCode(responseCode);
+          mainResDto.setFlag(flag);
           break;
 
           case "user":
@@ -135,6 +184,13 @@ public class AuthController {
               .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(userRole);
             user.setRoleId(2);
+
+            message = "user registered successfully";
+            responseCode = HttpStatus.OK.value();
+            flag = true;
+            mainResDto.setMessage(message);
+            mainResDto.setResponseCode(responseCode);
+            mainResDto.setFlag(flag);
           break;
 
           case "agent":
@@ -142,6 +198,13 @@ public class AuthController {
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(agentRole);
             user.setRoleId(3);
+
+            message = "agent registered successfully";
+            responseCode = HttpStatus.OK.value();
+            flag = true;
+            mainResDto.setMessage(message);
+            mainResDto.setResponseCode(responseCode);
+            mainResDto.setFlag(flag);
             break;
         }
     }
@@ -149,7 +212,7 @@ public class AuthController {
     user.setRoles(roles);
     userRepository.save(user);
 
-    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    return new ResponseEntity(mainResDto, HttpStatus.OK);
   }
 
   @PostMapping("/refreshtoken")

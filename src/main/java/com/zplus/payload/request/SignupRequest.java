@@ -4,11 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
- @Data
+import java.util.Date;
+
+@Data
  @AllArgsConstructor
  @NoArgsConstructor
 public class SignupRequest {
@@ -23,7 +21,48 @@ public class SignupRequest {
 
     private String password;
 
-     private String status;
+    private String fullName;
 
+    private Integer age;
+
+    private String gender;
+
+    private Date dateOfBirth;
+
+    private String nomineeFullName;
+
+    private Integer nomineeAge;
+
+    private String nomineeGender;
+
+    private String nomineeMobileNumber;
+
+    private Date nomineeDateOfBirth;
+
+    private String photo;
+
+    private String address;
+
+    private String otherAddress;
+
+    private String villageAddress;
+
+    private String occupation;
+
+    private String officeAddress;
+
+    private String panNo;
+
+    private String aadhaarCardNo;
+
+    private String propertyType;
+
+    private Double cibilScore;
+
+    private String referenceName;
+
+    private String referenceMobile;
+
+    private String status;
  }
 
