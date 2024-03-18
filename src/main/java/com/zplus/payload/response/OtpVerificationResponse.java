@@ -1,20 +1,19 @@
 package com.zplus.payload.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChangePasswordRes {
+@Getter
+@Setter
+public class OtpVerificationResponse {
+
+    private Long id;
 
     private String message;
 
     private Integer responseCode;
 
     private Boolean flag;
-
 }

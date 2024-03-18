@@ -121,6 +121,7 @@ public class AuthController {
   @PostMapping("/registration")
   public ResponseEntity registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     MainResDto mainResDto = new MainResDto();
+    RegistrationResponse registrationResponse = new RegistrationResponse();
 
     if (userRepository.existsByUserMobNo(signUpRequest.getUserMobNo())) {
       mainResDto.setMessage("Error: mobileNo is already taken!");
@@ -158,14 +159,14 @@ public class AuthController {
       message = "user registered successfully";
       responseCode = HttpStatus.OK.value();
       flag = true;
-      mainResDto.setMessage(message);
-      mainResDto.setResponseCode(responseCode);
-      mainResDto.setFlag(flag);
+      registrationResponse.setMessage(message);
+      registrationResponse.setResponseCode(responseCode);
+      registrationResponse.setFlag(flag);
       this.userRepository.save(user);
       return new ResponseEntity(mainResDto, HttpStatus.OK);
     } else {
         switch (strRoles) {
-        case "admin":
+        case "ROLE_ADMIN":
           Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
               .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(adminRole);
@@ -174,12 +175,12 @@ public class AuthController {
           message = "admin registered successfully";
           responseCode = HttpStatus.OK.value();
           flag = true;
-          mainResDto.setMessage(message);
-          mainResDto.setResponseCode(responseCode);
-          mainResDto.setFlag(flag);
+          registrationResponse.setMessage(message);
+          registrationResponse.setResponseCode(responseCode);
+          registrationResponse.setFlag(flag);
           break;
 
-          case "user":
+          case "ROLE_USER":
           Role userRole = roleRepository.findByName(ERole.ROLE_USER)
               .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(userRole);
@@ -188,12 +189,12 @@ public class AuthController {
             message = "user registered successfully";
             responseCode = HttpStatus.OK.value();
             flag = true;
-            mainResDto.setMessage(message);
-            mainResDto.setResponseCode(responseCode);
-            mainResDto.setFlag(flag);
+            registrationResponse.setMessage(message);
+            registrationResponse.setResponseCode(responseCode);
+            registrationResponse.setFlag(flag);
           break;
 
-          case "agent":
+          case "ROLE_AGENT":
             Role agentRole = roleRepository.findByName(ERole.ROLE_AGENT)
                     .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
             roles.add(agentRole);
@@ -202,17 +203,127 @@ public class AuthController {
             message = "agent registered successfully";
             responseCode = HttpStatus.OK.value();
             flag = true;
-            mainResDto.setMessage(message);
-            mainResDto.setResponseCode(responseCode);
-            mainResDto.setFlag(flag);
-            break;
+            registrationResponse.setMessage(message);
+            registrationResponse.setResponseCode(responseCode);
+            registrationResponse.setFlag(flag);
         }
     }
     System.out.println(roles);
     user.setRoles(roles);
-    userRepository.save(user);
+    User user1 = userRepository.save(user);
+    registrationResponse.setRole(user1.getRoles().stream().findFirst().get().getName().name());
+    BeanUtils.copyProperties(user1,registrationResponse);
+    registrationResponse.setId(user1.getId());
+    return new ResponseEntity(registrationResponse, HttpStatus.OK);
+  }
+  @PostMapping(value = "/forgotPassword")
+  public ResponseEntity forgotPassword(@RequestBody ForgotPasswordReq forgotPasswordReq)
+  {
+    MainResDto mainResDto= userMasterService.forgotPassword1(forgotPasswordReq);
 
-    return new ResponseEntity(mainResDto, HttpStatus.OK);
+    if (mainResDto!=null){
+      return new ResponseEntity(mainResDto, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(mainResDto, HttpStatus.BAD_REQUEST);
+    }
+  }
+  @PostMapping(value = "/VerificationOtpReq")
+  public ResponseEntity VerificationOtpReq(@RequestBody VerificationOtpReq verificationOtpReq)
+  {
+    OtpVerificationResponse otpVerificationResponse=userMasterService.VerificationOtp(verificationOtpReq);
+    if(otpVerificationResponse!=null)
+    {
+      return new ResponseEntity(otpVerificationResponse,HttpStatus.OK);
+    }else
+      return new ResponseEntity(otpVerificationResponse,HttpStatus.BAD_REQUEST);
+  }
+  @PostMapping(value = "/changepassword")
+  public ResponseEntity ChangePassword(@RequestBody ChangePasswordReq changePasswordReq) {
+    ChangePasswordRes changePasswordRes = userMasterService.ChangePassword(changePasswordReq);
+
+    if (changePasswordRes!=null){
+      return new ResponseEntity(changePasswordRes, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(changePasswordRes, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @PutMapping("/updateUser")
+  public ResponseEntity updateUser(@RequestBody UpdateUserRequest  updateUserRequest)
+  {
+    UpdateUserResponse updateUserResponse = userMasterService.updateUser(updateUserRequest);
+    if(updateUserResponse!=null)
+    {
+      return new ResponseEntity(updateUserResponse, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(updateUserResponse, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping(value = "/getuserbyid/{id}")
+  public ResponseEntity getUserByUserId(@PathVariable("id") Long id)
+  {
+    UserRes userRes=new UserRes();
+    userRes=userMasterService.getUserByUserId(id);
+
+    if(userRes!=null)
+    {
+      return  new ResponseEntity(userRes,HttpStatus.OK);
+    }
+    else
+    {
+      return new ResponseEntity(userRes,HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping(value = "/getalluserbyrole/{role}")
+//  @PreAuthorize("hasRole('Admin')")
+  public  ResponseEntity getAllUser(@PathVariable String role)
+  {
+    List<UserRes> list=userMasterService.getAllUser(role);
+
+    if (list!=null){
+      return new ResponseEntity(list, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(list, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping("/getallusers")
+  public  ResponseEntity getAAllUsers()
+  {
+    List<UserRes> list =userMasterService.getAllUsers();
+    return new ResponseEntity( list,HttpStatus.OK);
+  }
+
+  @GetMapping(value = "/getallonlyactiveusers")
+  public ResponseEntity getActiveUser()
+  {
+    UserRes userRes=new UserRes();
+    List<UserRes> userResList=userMasterService.getActiveUser();
+    return new ResponseEntity(userResList,HttpStatus.OK);
+  }
+
+  @GetMapping("/getallagents")
+  public ResponseEntity getAllAgents(){
+      List<UserRes> list = this.userMasterService.getAllAgents();
+
+      if (list!=null){
+        return new ResponseEntity(list, HttpStatus.OK);
+      }else {
+        return new ResponseEntity(list, HttpStatus.BAD_REQUEST);
+      }
+  }
+
+  @GetMapping("/getallactiveagents")
+  public ResponseEntity getAllActiveAgents(){
+    List<UserRes> list = this.userMasterService.getAllActiveAgentsList();
+
+    if (list!=null){
+      return new ResponseEntity(list, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(list, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @PostMapping("/refreshtoken")
@@ -237,52 +348,6 @@ public class AuthController {
     refreshTokenService.deleteByUserId(userId);
     return ResponseEntity.ok(new MessageResponse("Log out successful!"));
   }
-  @GetMapping(value = "/getAllUser/{role}")
-  @PreAuthorize("hasRole('ADMIN')")
-  public  ResponseEntity getAllUser(@PathVariable String role)
-  {
-    List<User> list=userMasterService.getAllUser(role);
-    return  new ResponseEntity(list,HttpStatus.OK);
-  }
-
-
-  @PutMapping("/updateUser")
-   public ResponseEntity updateUser(@RequestBody SignupRequest  signupRequest)
-  {
-    Boolean flag=userMasterService.updateUser(signupRequest);
-    if(flag)
-    {
-      return new ResponseEntity(flag, HttpStatus.OK);
-    }else {
-      return new ResponseEntity(flag, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  @GetMapping(value = "/getUserByUserId/{id}")
-  public ResponseEntity getUserByUserId(@PathVariable("id") Long id)
-  {
-    UserRes userRes=new UserRes();
-    userRes=userMasterService.getUserByUserId(id);
-
-    if(userRes!=null)
-    {
-      return  new ResponseEntity(userRes,HttpStatus.OK);
-    }
-    else
-    {
-      return new ResponseEntity(userRes,HttpStatus.BAD_REQUEST);
-    }
-  }
-
-
-  @GetMapping(value = "/getActiveUsers")
-  public ResponseEntity getActiveUser()
-  {
-    UserRes userRes=new UserRes();
-    List<UserRes> userResList=userMasterService.getActiveUser();
-    return new ResponseEntity(userResList,HttpStatus.OK);
-  }
-
 
   @GetMapping(value = "/editByUserId/{id}")
   public ResponseEntity editByUserId(@PathVariable("id") Long id)
@@ -291,47 +356,6 @@ public class AuthController {
     User user=new User();
      user=userRepository.findById(id).get();
      return new ResponseEntity(user,HttpStatus.OK);
-  }
-
-
-
-  @PostMapping(value = "/ChangePassword")
-  public ResponseEntity ChangePassword(@RequestBody ChangePasswordReq changePasswordReq) {
-    ChangePasswordRes changePasswordRes = userMasterService.ChangePassword(changePasswordReq);
-    return new ResponseEntity(changePasswordRes, HttpStatus.OK);
-  }
-
-  @PostMapping(value = "/forgotPassword")
-  public ResponseEntity forgotPassword(@RequestBody ForgotPasswordReq forgotPasswordReq)
-  {
-    Boolean flag= userMasterService.forgotPassword1(forgotPasswordReq);
-    if(flag)
-    {
-      return new ResponseEntity(flag,HttpStatus.OK);
-    }else {
-      return new ResponseEntity(flag,HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  @PostMapping(value = "/VerificationOtpReq")
-  public ResponseEntity VerificationOtpReq(@RequestBody VerificationOtpReq verificationOtpReq)
-  {
-    Boolean flag=userMasterService.VerificationOtp(verificationOtpReq);
-    if(flag)
-    {
-      return new ResponseEntity(flag,HttpStatus.OK);
-    }else
-      return new ResponseEntity(flag,HttpStatus.BAD_REQUEST);
-  }
-
-
-  @GetMapping("/getAAllUsers")
-  public  ResponseEntity getAAllUsers()
-  {
-    List list=new ArrayList();
-    list=userMasterService.getAAllUsers();
-
-      return new ResponseEntity( list,HttpStatus.OK);
   }
 
 }

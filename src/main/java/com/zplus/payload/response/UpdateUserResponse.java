@@ -1,31 +1,22 @@
 package com.zplus.payload.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRes {
-
+@Getter
+@Setter
+public class UpdateUserResponse {
     private Long id;
 
     private String email;
 
-    private String password;
-
     private String userMobNo;
 
-    private String address;
-
-    private String status;
+    private String role;
 
     private String fullName;
 
@@ -47,6 +38,8 @@ public class UserRes {
 
     private String photo;
 
+    private String address;
+
     private String otherAddress;
 
     private String villageAddress;
@@ -67,7 +60,5 @@ public class UserRes {
 
     private String referenceMobile;
 
+    private String status;
 }
-
-//um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile
-

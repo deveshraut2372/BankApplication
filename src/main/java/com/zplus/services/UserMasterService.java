@@ -2,19 +2,18 @@ package com.zplus.services;
 
 import com.zplus.models.User;
 import com.zplus.payload.request.*;
-import com.zplus.payload.response.ChangePasswordRes;
-import com.zplus.payload.response.UserRes;
+import com.zplus.payload.response.*;
 
 import java.util.List;
 
 public interface UserMasterService {
 
 
-    List<User> getAllUser(String role);
+    List<UserRes> getAllUser(String role);
 
     UserRes getUserByUserId(Long id);
 
-    Boolean updateUser(SignupRequest signupRequest);
+    UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 
 //    DashBoardCountResDto getActiveUserCount(Long agentId);
 //
@@ -28,12 +27,14 @@ public interface UserMasterService {
 
     ChangePasswordRes ChangePassword(ChangePasswordReq changePasswordReq);
 
-    Boolean forgotPassword1(ForgotPasswordReq forgotPasswordReq);
+    MainResDto forgotPassword1(ForgotPasswordReq forgotPasswordReq);
 
-    Boolean VerificationOtp(VerificationOtpReq verificationOtpReq);
+    OtpVerificationResponse VerificationOtp(VerificationOtpReq verificationOtpReq);
 
-  List getAAllUsers();
-//    List<User> findByRole(String role);
+    List<UserRes> getAllUsers();
 
 
+    List<UserRes> getAllAgents();
+
+    List<UserRes> getAllActiveAgentsList();
 }
