@@ -67,6 +67,8 @@ public class UserRes {
 
     private String referenceMobile;
 
+    private Date registrationDate;
+
 }
 
 //um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile

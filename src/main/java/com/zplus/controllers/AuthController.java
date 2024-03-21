@@ -1,17 +1,16 @@
 package com.zplus.controllers;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import com.zplus.config.AccountNumberGeneration;
+import com.zplus.config.PasswordGeneration;
 import com.zplus.models.*;
 import com.zplus.payload.request.*;
 import com.zplus.payload.response.*;
-import com.zplus.repository.RefreshTokenRepository;
+import com.zplus.repository.*;
 import com.zplus.services.UserMasterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import com.zplus.security.exception.TokenRefreshException;
-import com.zplus.repository.RoleRepository;
-import com.zplus.repository.UserRepository;
 import com.zplus.security.jwt.JwtUtils;
 import com.zplus.services.impl.RefreshTokenService;
 import com.zplus.services.impl.UserDetailsImpl;
@@ -48,6 +45,16 @@ public class AuthController {
 
   @Autowired
   RoleRepository roleRepository;
+
+  @Autowired
+  private AccountTypeRepository accountTypeRepository;
+
+  @Autowired
+  private UserAccountMasterDao userAccountMasterDao;
+
+  @Autowired
+  private UserBankAccountRepository userBankAccountRepository;
+
 
   @Autowired
   PasswordEncoder encoder;
@@ -146,7 +153,6 @@ public class AuthController {
     user.setUserMobNo(signUpRequest.getUserMobNo());
     user.setStatus("Active");
     BeanUtils.copyProperties(signUpRequest,user);
-    user.setPassword(encoder.encode(signUpRequest.getPassword()));
     String strRoles = signUpRequest.getRole();
     Set<Role> roles = new HashSet<>();
 
@@ -208,12 +214,127 @@ public class AuthController {
             registrationResponse.setFlag(flag);
         }
     }
+
     System.out.println(roles);
     user.setRoles(roles);
+    user.setRegistrationDate(new Date());
+    user.setKycStatus("Pending");
+    String name = signUpRequest.getFullName();
+     name = name.substring(0,4);
+     name = name.toUpperCase();
+
+     Integer pass = PasswordGeneration.passwordGeneration();
+    user.setPassword(encoder.encode(name+pass));
+    System.out.println("User Password = "+user.getPassword());
     User user1 = userRepository.save(user);
-    registrationResponse.setRole(user1.getRoles().stream().findFirst().get().getName().name());
-    BeanUtils.copyProperties(user1,registrationResponse);
-    registrationResponse.setId(user1.getId());
+
+    List<AccountTypeIdsRequest> list = signUpRequest.getAccountTypeIds();
+    System.out.println(list);
+    if (list!=null){
+      for(AccountTypeIdsRequest accountTypeId : signUpRequest.getAccountTypeIds() )
+      {
+        AccountTypeMaster accountTypeMaster = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
+        UserAccountMaster userAccountMaster=new UserAccountMaster();
+        userAccountMaster.setUser(user1);
+        userAccountMaster.setAccountTypeMaster(accountTypeMaster);
+        userAccountMasterDao.save(userAccountMaster);
+
+        AccountTypeMaster accountTypeMaster1 = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
+        if (accountTypeMaster1.getAccountTypeName().equalsIgnoreCase("Fixed Deposit")){
+          UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
+          Integer userBankNumber = AccountNumberGeneration.fixedDepositAccountNumberGeneration();
+          String userBankAccountNumber = String.valueOf(userBankNumber);
+          if (userBankAccountNumber.length()==1){
+            userBankAccountNumber = "AUNFD0000000"+userBankAccountNumber;
+            if (userBankAccountRepository.existsByUserBankAccountNumber(userBankAccountNumber)){
+               userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+              String userBankAccountNumber1 = String.valueOf(userBankNumber);
+              userBankAccountNumber1 = "AUNFD0000000"+userBankAccountNumber;
+              userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber1);
+            }
+          } else if (userBankAccountNumber.length()==2) {
+            userBankAccountNumber = "AUNFD000000"+userBankAccountNumber;
+            if (userBankAccountRepository.existsByUserBankAccountNumber(userBankAccountNumber)){
+              userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+              String userBankAccountNumber1 = String.valueOf(userBankNumber);
+              userBankAccountNumber1 = "AUNFD000000"+userBankAccountNumber;
+              userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber1);
+            }
+          }else if (userBankAccountNumber.length()==3) {
+            userBankAccountNumber = "AUNFD00000"+userBankAccountNumber;
+            userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+            String userBankAccountNumber1 = String.valueOf(userBankNumber);
+            userBankAccountNumber1 = "AUNFD00000"+userBankAccountNumber;
+            userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber1);
+          }else if (userBankAccountNumber.length()==4) {
+            userBankAccountNumber = "AUNFD0000"+userBankAccountNumber;
+            userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+            String userBankAccountNumber1 = String.valueOf(userBankNumber);
+            userBankAccountNumber1 = "AUNFD0000"+userBankAccountNumber;
+            userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber1);
+          }else if (userBankAccountNumber.length()==5) {
+            userBankAccountNumber = "AUNFD000"+userBankAccountNumber;
+            userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+            String userBankAccountNumber1 = String.valueOf(userBankNumber);
+            userBankAccountNumber1 = "AUNFD000"+userBankAccountNumber;
+            userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber1);
+          }else if (userBankAccountNumber.length()==6) {
+            userBankAccountNumber = "AUNFD00"+userBankAccountNumber;
+            userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+            String userBankAccountNumber1 = String.valueOf(userBankNumber);
+            userBankAccountNumber1 = "AUNFD00"+userBankAccountNumber;
+            userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber1);
+          }else if (userBankAccountNumber.length()==7) {
+            userBankAccountNumber = "AUNFD0"+userBankAccountNumber;
+            userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+            String userBankAccountNumber1 = String.valueOf(userBankNumber);
+            userBankAccountNumber1 = "AUNFD0"+userBankAccountNumber;
+            userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber1);
+          }else if (userBankAccountNumber.length()==8) {
+            userBankAccountNumber = "AUNFD"+userBankAccountNumber;
+            userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+            String userBankAccountNumber1 = String.valueOf(userBankNumber);
+            userBankAccountNumber1 = "AUNFD0"+userBankAccountNumber;
+            userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber1);
+          }
+          userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
+          userBankAccountMaster.setUser(user1);
+          userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
+          userBankAccountMaster.setDate(new Date());
+          userBankAccountMaster.setStatus("Active");
+          this.userBankAccountRepository.save(userBankAccountMaster);
+          //  ***************************** ++++++++++++++========================= WORK PENDING
+        }else if (accountTypeMaster1.getAccountTypeName().equalsIgnoreCase("Pigmy Loan")){
+          Integer userBankAccountNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+          UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
+          userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
+          userBankAccountMaster.setUser(user1);
+//          userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
+          userBankAccountMaster.setDate(new Date());
+          userBankAccountMaster.setStatus("Active");
+          this.userBankAccountRepository.save(userBankAccountMaster);
+        } else if (accountTypeMaster1.getAccountTypeName().equalsIgnoreCase(" Recurring Deposit")) {
+          Integer userBankAccountNumber = AccountNumberGeneration.recurringDepositAccount();
+          UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
+          userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
+          userBankAccountMaster.setUser(user1);
+//          userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
+          userBankAccountMaster.setDate(new Date());
+          userBankAccountMaster.setStatus("Active");
+          this.userBankAccountRepository.save(userBankAccountMaster);
+        }
+      }
+    }
+
+//    registrationResponse.setRole(user1.getRoles().stream().findFirst().get().getName().name());
+//    BeanUtils.copyProperties(user1,registrationResponse);
+//    registrationResponse.setId(user1.getId());
+//    registrationResponse.setRegistrationDate(user1.getRegistrationDate());
+
+//    if (list!=null){
+//      List<AccountTypeMaster> accountTypeMasterList = userAccountMasterDao.getAllAccountTypeMasterByUser(user1.getId());
+//      registrationResponse.setAccountTypeMasterList(accountTypeMasterList);
+//    }
     return new ResponseEntity(registrationResponse, HttpStatus.OK);
   }
   @PostMapping(value = "/forgotPassword")
@@ -237,7 +358,7 @@ public class AuthController {
     }else
       return new ResponseEntity(otpVerificationResponse,HttpStatus.BAD_REQUEST);
   }
-  @PostMapping(value = "/changepassword")
+  @PostMapping(value = "/newpassword")
   public ResponseEntity ChangePassword(@RequestBody ChangePasswordReq changePasswordReq) {
     ChangePasswordRes changePasswordRes = userMasterService.ChangePassword(changePasswordReq);
 
@@ -352,10 +473,121 @@ public class AuthController {
   @GetMapping(value = "/editByUserId/{id}")
   public ResponseEntity editByUserId(@PathVariable("id") Long id)
   {
-
     User user=new User();
      user=userRepository.findById(id).get();
      return new ResponseEntity(user,HttpStatus.OK);
+  }
+
+  @PutMapping("/createkyc")
+  public ResponseEntity create(@RequestBody KYCRequest kycRequest){
+    KYCResponse kycResponse = this.userMasterService.createKyc(kycRequest);
+
+    if (kycResponse!=null){
+      return new ResponseEntity(kycResponse, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(kycResponse, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @PutMapping("/changepassword")
+  public ResponseEntity changePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest){
+    Boolean flag = this.userMasterService.updatePassword(updatePasswordRequest);
+
+    if (Boolean.TRUE.equals(flag)){
+      return new ResponseEntity(flag, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(flag, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping("/getallpendingkyc")
+  public ResponseEntity getAllPendingKyc(){
+    List<PendingKYCResponse> pendingKYCResponses = this.userMasterService.getAllPendingKYC();
+
+    if (pendingKYCResponses!=null){
+      return new ResponseEntity(pendingKYCResponses, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(pendingKYCResponses, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping("/applyingkyclist")
+  public ResponseEntity getApplyingKYC(){
+    List<ApplyingKYCResponse> applyingKYCResponses = this.userMasterService.getApplyingKyc();
+      if (applyingKYCResponses!=null){
+        return new ResponseEntity(applyingKYCResponses, HttpStatus.OK);
+      }else {
+        return new ResponseEntity(applyingKYCResponses, HttpStatus.BAD_REQUEST);
+      }
+
+  }
+
+  @PutMapping("/updatekyc")
+  public ResponseEntity update(@RequestBody KYCRequest kycRequest){
+    KYCResponse kycResponse = this.userMasterService.updateKYC(kycRequest);
+
+    if (kycResponse!=null){
+      return new ResponseEntity(kycResponse,HttpStatus.OK);
+    }else {
+      return new ResponseEntity(kycResponse,HttpStatus.BAD_REQUEST);
+    }
+  }
+
+
+  @GetMapping("/acceptkyc/{id}/{agentId}")
+  public ResponseEntity acceptKYC(@PathVariable("id") Long id, @PathVariable("agentId") Long id1){
+      AcceptKYCResponse acceptKYCResponse = this.userMasterService.acceptKYC(id,id1);
+
+      if (acceptKYCResponse!=null){
+        return new ResponseEntity(acceptKYCResponse, HttpStatus.OK);
+      }else {
+        return new ResponseEntity(acceptKYCResponse, HttpStatus.BAD_REQUEST);
+      }
+  }
+
+  @PutMapping("/rejectkyc")
+  public ResponseEntity rejectKYC(@RequestBody RejectKYCRequest rejectKYCRequest){
+    RejectKYCResponse rejectKYCResponse = this.userMasterService.rejectKYC(rejectKYCRequest);
+
+    if (rejectKYCResponse!=null){
+      return new ResponseEntity(rejectKYCResponse, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(rejectKYCResponse, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+
+  @PutMapping("/updatekycfrommanagement")
+  public ResponseEntity updateKYCFromManagement(@RequestBody FromManagementUpdateKYCRequest fromManagementUpdateKYCRequest){
+    KYCResponse kycResponse = this.userMasterService.fromManagementUpdateKYC(fromManagementUpdateKYCRequest);
+
+    if (kycResponse!=null){
+      return new ResponseEntity(kycResponse, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(kycResponse, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping("/getstatuswisekyclist/{kycStatus}")
+  public ResponseEntity getStatusWiseKYCList(@PathVariable("kycStatus") String kycStatus){
+    List<KYCResponse> kycResponse = this.userMasterService.getStatusWiseKYCList(kycStatus);
+
+    if (kycResponse!=null){
+      return new ResponseEntity(kycResponse, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(kycResponse, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  @GetMapping("/getidwisekycdetails/{id}")
+  public ResponseEntity getIdWiseKYCDetails(@PathVariable("id") Long id){
+      KycDetailsResponse kycDetailsResponse = this.userMasterService.getIdWiseKycDetails(id);
+
+    if (kycDetailsResponse != null) {
+      return new ResponseEntity(kycDetailsResponse, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(kycDetailsResponse, HttpStatus.BAD_REQUEST);
+    }
   }
 
 }

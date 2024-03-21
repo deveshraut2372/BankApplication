@@ -1,8 +1,7 @@
 package com.zplus.repository;
 
 import com.zplus.models.User;
-import com.zplus.payload.request.UserTokenReqDto;
-import com.zplus.payload.response.UserRes;
+import com.zplus.payload.response.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,7 +19,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUserMobNo(String userMobNo);
 
-    @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile) from User as um where um.id=:id")
+    @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile,um.registrationDate) from User as um where um.id=:id")
     UserRes getUserByUserId(@Param("id") Long id);
 
   @Query("select um.fcmTokenString as fcmTokenString from User as um where um.id=:id")
@@ -31,7 +30,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
   @Query(" select um from User as um where um.id=:id")
   User getByUserId(@Param("id") Long id);
-  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile)  from User as um  where um.status='Active' and um.roleId=2")
+  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile,um.registrationDate)  from User as um  where um.status='Active' and um.roleId=2")
   List<UserRes> getActiveUser();
   String findOldPasswordById(@Param("id") Long id);
   @Transactional
@@ -44,15 +43,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
   @Query("select um from User as um where um.userMobNo=:userMobNo")
   User getByUserMobNo1(@Param("userMobNo") String userMobNo);
 
-  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile)  from User as um  where um.roleId=:rid and um.status='Active'")
+  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile,um.registrationDate)  from User as um  where um.roleId=:rid and um.status='Active'")
   List<UserRes> findUserListByRoleId(@Param("rid") int rid);
 
-  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile)  from User as um ")
+  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile,um.registrationDate)  from User as um ")
   List<UserRes> getAllUsers();
 
-  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile)  from User as um where um.roleId=3")
+  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile,um.registrationDate)  from User as um where um.roleId=3")
     List<UserRes> getAllAgents();
 
-  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile)  from User as um where um.roleId=3 and um.status='Active'")
+  @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.cibilScore,um.referenceName,um.referenceMobile,um.registrationDate)  from User as um where um.roleId=3 and um.status='Active'")
   List<UserRes> getAllActiveAgents();
+
+  @Query("select new com.zplus.payload.response.PendingKYCResponse(um.id,um.kycStatus) from User as um where um.kycStatus='Pending' and um.roleId=2 ")
+    List<PendingKYCResponse> getAllPendingKYCResponse(String pending);
+
+  @Query("select new com.zplus.payload.response.ApplyingKYCResponse(um.id,um.kycStatus) from User as um where um.kycStatus='Applying' and um.roleId=2 ")
+  List<ApplyingKYCResponse> getAllApplyingKyc(String applying);
+
+  @Query("select new com.zplus.payload.response.KYCResponse(u.id,u.gender,u.dateOfBirth,u.nomineeFullName,u.nomineeAge,u.nomineeGender,u.nomineeMobileNumber,u.nomineeDateOfBirth,u.address,u.otherAddress,u.villageAddress,u.occupation,u.officeAddress,u.panNo,u.aadhaarCardNo,u.propertyType,u.cibilScore,u.referenceName,u.referenceMobile,u.kycDate,u.aadhaarFront,u.aadhaarBack,u.panCardFront,u.passbookFront) from User as u where u.kycStatus=:kycStatus")
+  List<KYCResponse> findAllByKycStatus(@Param("kycStatus") String kycStatus);
+
+  @Query("select new com.zplus.payload.response.KycDetailsResponse(u.id,u.gender,u.dateOfBirth,u.nomineeFullName,u.nomineeAge,u.nomineeGender,u.nomineeMobileNumber,u.nomineeDateOfBirth,u.address,u.otherAddress,u.villageAddress,u.occupation,u.officeAddress,u.panNo,u.aadhaarCardNo,u.propertyType,u.cibilScore,u.referenceName,u.referenceMobile,u.aadhaarFront,u.aadhaarBack,u.panCardFront,u.passbookFront,u.kycStatus,u.kycDate,u.kycAcceptedDate,u.kycRejectReason,u.kycRejectDate) from User as u where u.id=:id and u.status='Active'")
+  KycDetailsResponse getIdWiseKycDetails(@Param("id") Long id);
 }

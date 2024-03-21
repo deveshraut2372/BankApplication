@@ -15,14 +15,6 @@ public interface UserMasterService {
 
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 
-//    DashBoardCountResDto getActiveUserCount(Long agentId);
-//
-//    TotalWinningAmountResDto getTotalWinningAmount(String fromdate, String todate);
-//
-//    List agentWiseUserList(AgentWiseUserReqDto agentWiseUserReqDto);
-//
-//    List agentWiseUserWinningList(AgentWiseUserReqDto agentWiseUserReqDto);
-
     List<UserRes> getActiveUser();
 
     ChangePasswordRes ChangePassword(ChangePasswordReq changePasswordReq);
@@ -37,4 +29,24 @@ public interface UserMasterService {
     List<UserRes> getAllAgents();
 
     List<UserRes> getAllActiveAgentsList();
+
+    KYCResponse createKyc(KYCRequest kycRequest);
+
+    Boolean updatePassword(UpdatePasswordRequest updatePasswordRequest);
+
+    List<PendingKYCResponse> getAllPendingKYC();
+
+    KYCResponse updateKYC(KYCRequest kycRequest);
+
+    AcceptKYCResponse acceptKYC(Long id,Long id1);
+
+    RejectKYCResponse rejectKYC(RejectKYCRequest rejectKYCRequest);
+
+    List<ApplyingKYCResponse> getApplyingKyc();
+
+    KYCResponse fromManagementUpdateKYC(FromManagementUpdateKYCRequest fromManagementUpdateKYCRequest);
+
+    List<KYCResponse> getStatusWiseKYCList(String kycStatus);
+
+    KycDetailsResponse getIdWiseKycDetails(Long id);
 }

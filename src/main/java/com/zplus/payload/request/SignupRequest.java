@@ -4,14 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
  @AllArgsConstructor
  @NoArgsConstructor
 public class SignupRequest {
 
-     private Long id;
+    private Long id;
+
+    private List<AccountTypeIdsRequest> accountTypeIds;
 
     private String email;
 
@@ -19,49 +21,7 @@ public class SignupRequest {
 
     private String role;
 
-    private String password;
-
     private String fullName;
-
-    private Integer age;
-
-    private String gender;
-
-    private Date dateOfBirth;
-
-    private String nomineeFullName;
-
-    private Integer nomineeAge;
-
-    private String nomineeGender;
-
-    private String nomineeMobileNumber;
-
-    private Date nomineeDateOfBirth;
-
-    private String photo;
-
-    private String address;
-
-    private String otherAddress;
-
-    private String villageAddress;
-
-    private String occupation;
-
-    private String officeAddress;
-
-    private String panNo;
-
-    private String aadhaarCardNo;
-
-    private String propertyType;
-
-    private Double cibilScore;
-
-    private String referenceName;
-
-    private String referenceMobile;
 
     private String status;
  }

@@ -17,10 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.internet.MimeMessage;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -62,15 +62,14 @@ public class UserMasterServiceImpl implements UserMasterService {
             return userRes;
         }else {
             return new UserRes(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
-                    null,null,null,null,null,null,null,null);
+                    null,null,null,null,null,null,null,null,null);
         }
     }
 
     @Override
     public UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest) {
         UpdateUserResponse updateUserResponse = new UpdateUserResponse();
-        User user=new User();
-         user=userRepository.findById(updateUserRequest.getId()).get();
+         User user=userRepository.findById(updateUserRequest.getId()).get();
          BeanUtils.copyProperties(updateUserRequest,user);
         try
         {
@@ -95,7 +94,7 @@ public class UserMasterServiceImpl implements UserMasterService {
     public MainResDto forgotPassword1(ForgotPasswordReq forgotPasswordReq) {
         MainResDto mainResDto = new MainResDto();
         Random random=new Random();
-        Integer otp =random.nextInt(99999);
+        Integer otp =random.nextInt(9999);
 
         System.out.println("  otp otp otp ====   "+otp);
         if(userRepository.existsByUserMobNo(forgotPasswordReq.getUserMobNo()))
@@ -185,6 +184,221 @@ public class UserMasterServiceImpl implements UserMasterService {
     public List<UserRes> getAllActiveAgentsList() {
         List<UserRes> list = this.userRepository.getAllActiveAgents();
         return list;
+    }
+
+    @Override
+    public KYCResponse createKyc(KYCRequest kycRequest) {
+        KYCResponse kycResponse = new KYCResponse();
+        User user = this.userRepository.findById(kycRequest.getId()).get();
+        Date NomineeDateOfBirth = kycRequest.getNomineeDateOfBirth();
+        LocalDate ndob = NomineeDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate currentDate = LocalDate.now();
+
+        Date userDateOfBirth = kycRequest.getDateOfBirth();
+        LocalDate udob = userDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+        Period period = Period.between(ndob,currentDate);
+        int nomineeAge = period.getYears();
+        System.out.println("nomineeAge = "+nomineeAge);
+
+        Period period1 = Period.between(udob,currentDate);
+        int userAge = period1.getYears();
+        System.out.println("AGE userAge = "+userAge);
+
+        BeanUtils.copyProperties(kycRequest,user);
+        try {
+            user.setKycStatus("Applying");
+            user.setKycDate(new Date());
+            user.setAge(userAge);
+            user.setNomineeAge(nomineeAge);
+            User user1 = this.userRepository.save(user);
+            BeanUtils.copyProperties(user1,kycResponse);
+            kycResponse.setMessage("KYC Updated");
+            kycResponse.setResponseCode(HttpStatus.OK.value());
+            kycResponse.setFlag(true);
+            return kycResponse;
+        }catch (Exception e){
+            e.printStackTrace();
+            kycResponse.setMessage("KYC not updated");
+            kycResponse.setResponseCode(HttpStatus.BAD_REQUEST.value());
+            kycResponse.setFlag(false);
+            return kycResponse;
+        }
+    }
+
+    @Override
+    public Boolean updatePassword(UpdatePasswordRequest updatePasswordRequest) {
+        User user = this.userRepository.findById(updatePasswordRequest.getId()).get();
+        try {
+            user.setPassword(encoder.encode(updatePasswordRequest.getNewPassword()));
+            this.userRepository.save(user);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public List<PendingKYCResponse> getAllPendingKYC() {
+        List<PendingKYCResponse> pendingKYCResponses = this.userRepository.getAllPendingKYCResponse("Pending");
+        return pendingKYCResponses;
+    }
+
+    @Override
+    public KYCResponse updateKYC(KYCRequest kycRequest) {
+        KYCResponse kycResponse = new KYCResponse();
+        User user = this.userRepository.findById(kycRequest.getId()).get();
+
+        if (user!=null){
+            Date NomineeDateOfBirth = kycRequest.getNomineeDateOfBirth();
+            LocalDate ndob = NomineeDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate currentDate = LocalDate.now();
+
+            Date userDateOfBirth = kycRequest.getDateOfBirth();
+            LocalDate udob = userDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            Period period = Period.between(ndob,currentDate);
+            int nomineeAge = period.getYears();
+
+            Period period1 = Period.between(udob,currentDate);
+            int userAge = period1.getYears();
+
+            try {
+                user.setAge(userAge);
+                user.setNomineeAge(nomineeAge);
+                user.setKycDate(new Date());
+                user.setKycStatus("Pending");
+                user.setKycRejectReason(null);
+                user.setKycAcceptedDate(null);
+                user.setKycRejectDate(null);
+                BeanUtils.copyProperties(kycRequest,user);
+                User user1 = this.userRepository.save(user);
+                BeanUtils.copyProperties(user1,kycResponse);
+                kycResponse.setMessage("KYC Updated");
+                kycResponse.setResponseCode(HttpStatus.OK.value());
+                kycResponse.setFlag(true);
+                return kycResponse;
+            }catch (Exception e){
+                e.printStackTrace();
+                return new KYCResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+                        null,null,null,null,null,null,"something went wrong",HttpStatus.BAD_REQUEST.value(),false);
+            }
+        }else {
+            return new KYCResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+                    null,null,null,null,null,null,"User not found",HttpStatus.BAD_REQUEST.value(),false);
+        }
+    }
+
+    @Override
+    public AcceptKYCResponse acceptKYC(Long id,Long id1) {
+        AcceptKYCResponse acceptKYCResponse = new AcceptKYCResponse();
+        User user = this.userRepository.findById(id).get();
+        User management = this.userRepository.findById(id1).get();
+        System.out.println("Management = "+management);
+        String managementMember = management.getRoles().stream().findFirst().get().getName().name();
+        System.out.println("Management Member = "+managementMember);
+
+        if (managementMember.equalsIgnoreCase("ROLE_AGENT") || managementMember.equalsIgnoreCase("ROLE_ADMIN")){
+            System.out.println("Accept USER KYC");
+            user.setKycAcceptedDate(new Date());
+            try {
+                user.setKycStatus("Accepted");
+                user.setKycRejectReason(null);
+                user.setKycRejectDate(null);
+                User user1 = this.userRepository.save(user);
+                BeanUtils.copyProperties(user1,acceptKYCResponse);
+                return acceptKYCResponse;
+            }catch (Exception e){
+                e.printStackTrace();
+                acceptKYCResponse.setId(null);
+                acceptKYCResponse.setKycStatus(null);
+                acceptKYCResponse.setKycAcceptedDate(null);
+                return acceptKYCResponse;
+            }
+        }else {
+            System.out.println("Invalid member");
+            acceptKYCResponse.setKycStatus(null);
+            acceptKYCResponse.setKycAcceptedDate(null);
+            acceptKYCResponse.setId(null);
+            return acceptKYCResponse;
+        }
+    }
+
+    @Override
+    public RejectKYCResponse rejectKYC(RejectKYCRequest rejectKYCRequest) {
+        RejectKYCResponse rejectKYCResponse = new RejectKYCResponse();
+        User user = this.userRepository.findById(rejectKYCRequest.getId()).get();
+        try {
+            user.setKycStatus("Rejected");
+            user.setKycRejectReason(rejectKYCRequest.getKycRejectReason());
+            user.setKycRejectDate(new Date());
+            User user1= this.userRepository.save(user);
+            rejectKYCResponse.setId(user.getId());
+            rejectKYCResponse.setKycRejectReason(user1.getKycRejectReason());
+            rejectKYCResponse.setKycStatus(user1.getKycStatus());
+            rejectKYCResponse.setKycRejectDate(user1.getKycRejectDate());
+            return rejectKYCResponse;
+        }catch (Exception e){
+            e.printStackTrace();
+            return new RejectKYCResponse(null,null,null,null);
+        }
+    }
+
+    @Override
+    public List<ApplyingKYCResponse> getApplyingKyc() {
+        List<ApplyingKYCResponse> applyingKYCResponses = this.userRepository.getAllApplyingKyc("Applying");
+        return applyingKYCResponses;
+    }
+
+    @Override
+    public KYCResponse fromManagementUpdateKYC(FromManagementUpdateKYCRequest fromManagementUpdateKYCRequest) {
+        KYCResponse kycResponse = new KYCResponse();
+
+        System.out.println("MA KYC = "+fromManagementUpdateKYCRequest);
+
+        User user = this.userRepository.findById(fromManagementUpdateKYCRequest.getId()).get();
+        User management = this.userRepository.findById(fromManagementUpdateKYCRequest.getManagementId()).get();
+
+        String managementMember = management.getRoles().stream().findFirst().get().getName().name();
+
+        if (managementMember.equalsIgnoreCase("ROLE_AGENT") || managementMember.equalsIgnoreCase("ROLE_ADMIN")){
+            BeanUtils.copyProperties(fromManagementUpdateKYCRequest,user);
+            user.setKycStatus("Accepted");
+            user.setKycRejectDate(null);
+            user.setKycAcceptedDate(new Date());
+            user.setKycRejectReason(null);
+            user.setKycDate(new Date());
+            User user1 = this.userRepository.save(user);
+            BeanUtils.copyProperties(user1,kycResponse);
+            kycResponse.setMessage("KYC Updated By "+managementMember);
+            kycResponse.setResponseCode(HttpStatus.OK.value());
+            kycResponse.setFlag(true);
+            return kycResponse;
+        }else {
+            kycResponse.setMessage("Invalid Management User");
+            kycResponse.setFlag(false);
+            kycResponse.setResponseCode(HttpStatus.BAD_REQUEST.value());
+            return kycResponse;
+        }
+    }
+
+    @Override
+    public List<KYCResponse> getStatusWiseKYCList(String kycStatus) {
+        List<KYCResponse> statusWiseList = this.userRepository.findAllByKycStatus(kycStatus);
+        return statusWiseList;
+    }
+
+    @Override
+    public KycDetailsResponse getIdWiseKycDetails(Long id) {
+        KycDetailsResponse kycDetailsResponse = this.userRepository.getIdWiseKycDetails(id);
+
+        if (kycDetailsResponse!=null){
+            return kycDetailsResponse;
+        }else {
+            return new KycDetailsResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+                    null,null,null,null,null,null,null,null,null,null,null,null);
+        }
     }
 
 

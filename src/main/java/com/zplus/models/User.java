@@ -115,6 +115,30 @@ public class User {
 
 	private String referenceMobile;
 
+	@Temporal(TemporalType.DATE)
+	private Date registrationDate;
+
+	private String kycStatus;
+
+	@Temporal(TemporalType.DATE)
+	private Date kycDate;
+
+	@Temporal(TemporalType.DATE)
+	private Date kycAcceptedDate;
+
+	private String kycRejectReason;
+
+	@Temporal(TemporalType.DATE)
+	private Date kycRejectDate;
+
+	private String aadhaarFront;
+
+	private String aadhaarBack;
+
+	private String panCardFront;
+
+	private String passbookFront;
+
 	public User(String username, String email, String password, String userMobNo, String address, String status, Set<Role> roles) {
 		this.username = username;
 		this.email = email;
