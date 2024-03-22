@@ -9,6 +9,8 @@ public class KYCRequest {
 
     private Long id;
 
+    private String fullName;
+
     private String gender;
 
     private Date dateOfBirth;
@@ -37,8 +39,6 @@ public class KYCRequest {
 
     private String propertyType;
 
-    private Double cibilScore;
-
     private String referenceName;
 
     private String referenceMobile;
@@ -50,4 +50,6 @@ public class KYCRequest {
     private String panCardFront;
 
     private String passbookFront;
+
+    private String photo;
 }

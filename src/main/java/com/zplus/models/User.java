@@ -109,8 +109,6 @@ public class User {
 
 	private String propertyType;
 
-	private Double cibilScore;
-
 	private String referenceName;
 
 	private String referenceMobile;

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserBankAccountRepository extends JpaRepository<UserBankAccountMaster,Integer> {
-    @Query("select ubam from UserBankAccountMaster as ubam where ubam.userBankAccountNumber=:userBankAccountNumber")
-    boolean existsByUserBankAccountNumber(@Param("userBankAccountNumber") String userBankAccountNumber);
+//    @Query("select ubam from UserBankAccountMaster as ubam where ubam.userBankAccountNumber=:userBankAccountNumber")
+//    boolean existsByUserBankAccountNumber(@Param("userBankAccountNumber") String userBankAccountNumber);
+    @Query("select u from UserBankAccountMaster as u where u.userBankAccountNumber=:userBankAccountNumber")
+    UserBankAccountMaster getByUserBankAccountNumber(@Param("userBankAccountNumber") String userBankAccountNumber);
 }

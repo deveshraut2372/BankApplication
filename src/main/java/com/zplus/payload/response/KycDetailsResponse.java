@@ -14,6 +14,8 @@ import java.util.Date;
 public class KycDetailsResponse {
     private Long id;
 
+    private String fullName;
+
     private String gender;
 
     private Date dateOfBirth;
@@ -44,8 +46,6 @@ public class KycDetailsResponse {
 
     private String propertyType;
 
-    private Double cibilScore;
-
     private String referenceName;
 
     private String referenceMobile;
@@ -67,6 +67,8 @@ public class KycDetailsResponse {
     private String kycRejectReason;
 
     private Date kycRejectDate;
+
+    private String photo;
 }
 
 //u.id,u.gender,u.dateOfBirth,u.nomineeFullName,u.nomineeAge,u.nomineeGender,u.nomineeMobileNumber,u.nomineeDateOfBirth,u.address,u.otherAddress,u.villageAddress,u.occupation,u.officeAddress,u.panNo,u.aadhaarCardNo,u.propertyType,u.cibilScore,u.referenceName,u.referenceMobile,u.aadhaarFront,u.aadhaarBack,u.panCardFront,u.passbookFront,u.kycStatus,u.Date,u.kycDate,u.kycAcceptedDate,u.kycRejectReason,u.kycRejectDate

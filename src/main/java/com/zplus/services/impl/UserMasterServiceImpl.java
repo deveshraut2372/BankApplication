@@ -61,7 +61,7 @@ public class UserMasterServiceImpl implements UserMasterService {
         if (userRes!=null){
             return userRes;
         }else {
-            return new UserRes(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+            return new UserRes(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
                     null,null,null,null,null,null,null,null,null);
         }
     }
@@ -281,11 +281,11 @@ public class UserMasterServiceImpl implements UserMasterService {
                 return kycResponse;
             }catch (Exception e){
                 e.printStackTrace();
-                return new KYCResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+                return new KYCResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
                         null,null,null,null,null,null,"something went wrong",HttpStatus.BAD_REQUEST.value(),false);
             }
         }else {
-            return new KYCResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+            return new KYCResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
                     null,null,null,null,null,null,"User not found",HttpStatus.BAD_REQUEST.value(),false);
         }
     }
@@ -397,7 +397,7 @@ public class UserMasterServiceImpl implements UserMasterService {
             return kycDetailsResponse;
         }else {
             return new KycDetailsResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
-                    null,null,null,null,null,null,null,null,null,null,null,null);
+                    null,null,null,null,null,null,null,null,null,null,null,null,null);
         }
     }
 

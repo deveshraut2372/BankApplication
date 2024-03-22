@@ -61,8 +61,6 @@ public class UserRes {
 
     private String propertyType;
 
-    private Double cibilScore;
-
     private String referenceName;
 
     private String referenceMobile;

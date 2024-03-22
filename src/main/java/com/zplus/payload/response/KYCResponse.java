@@ -12,6 +12,8 @@ import java.util.Date;
 public class KYCResponse {
     private Long id;
 
+    private String fullName;
+
     private String gender;
 
     private Date dateOfBirth;
@@ -42,8 +44,6 @@ public class KYCResponse {
 
     private String propertyType;
 
-    private Double cibilScore;
-
     private String referenceName;
 
     private String referenceMobile;
@@ -58,14 +58,17 @@ public class KYCResponse {
 
     private String passbookFront;
 
+    private String photo;
+
     private String message;
 
     private Integer responseCode;
 
     private Boolean flag;
 
-    public KYCResponse(Long id, String gender, Date dateOfBirth, String nomineeFullName, Integer nomineeAge, String nomineeGender, String nomineeMobileNumber, Date nomineeDateOfBirth, String address, String otherAddress, String villageAddress, String occupation, String officeAddress, String panNo, String aadhaarCardNo, String propertyType, Double cibilScore, String referenceName, String referenceMobile, Date kycDate, String aadhaarFront, String aadhaarBack, String panCardFront, String passbookFront) {
+    public KYCResponse(Long id,String fullName, String gender, Date dateOfBirth, String nomineeFullName, Integer nomineeAge, String nomineeGender, String nomineeMobileNumber, Date nomineeDateOfBirth, String address, String otherAddress, String villageAddress, String occupation, String officeAddress, String panNo, String aadhaarCardNo, String propertyType, String referenceName, String referenceMobile, Date kycDate, String aadhaarFront, String aadhaarBack, String panCardFront, String passbookFront,String photo) {
         this.id = id;
+        this.fullName = fullName;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.nomineeFullName = nomineeFullName;
@@ -81,7 +84,6 @@ public class KYCResponse {
         this.panNo = panNo;
         this.aadhaarCardNo = aadhaarCardNo;
         this.propertyType = propertyType;
-        this.cibilScore = cibilScore;
         this.referenceName = referenceName;
         this.referenceMobile = referenceMobile;
         this.kycDate = kycDate;
@@ -89,6 +91,7 @@ public class KYCResponse {
         this.aadhaarBack = aadhaarBack;
         this.panCardFront = panCardFront;
         this.passbookFront = passbookFront;
+        this.photo = photo;
     }
 }
 
