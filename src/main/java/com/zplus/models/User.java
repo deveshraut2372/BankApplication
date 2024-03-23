@@ -43,6 +43,10 @@ public class User {
 	@Column
 	private String userMobNo;
 
+	private String bAccountNumber;
+
+	private String ifscCode;
+
 	@Column
 	private String status;
 

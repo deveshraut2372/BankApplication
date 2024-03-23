@@ -241,21 +241,19 @@ public class AuthController {
         userAccountMasterDao.save(userAccountMaster);
 
         AccountTypeMaster accountTypeMaster1 = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
-          System.out.println("accountTypeMaster1 = = = ="+accountTypeMaster1);
         if (accountTypeMaster1!=null){
             System.out.println("HI HI");
           UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
-          Integer userBankNumber = AccountNumberGeneration.fixedDepositAccountNumberGeneration();
+          Integer userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
           String userBankAccountNumber = String.valueOf(userBankNumber);
             if (userBankAccountNumber.length()==1){
             userBankAccountNumber = "AUNLT0000000"+userBankAccountNumber;
               System.out.println("userBankAccountNumber1 1 = "+userBankAccountNumber);
               UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT0000000"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
           } else if (userBankAccountNumber.length()==2) {
               System.out.println("HI2");
@@ -263,10 +261,9 @@ public class AuthController {
               System.out.println("userBankAccountNumber 2 2 = "+userBankAccountNumber);
               UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT000000"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
           }else if (userBankAccountNumber.length()==3) {
               System.out.println("HI3");
@@ -276,10 +273,9 @@ public class AuthController {
               System.out.println("userBankAccountNumber4 4  = "+userBankAccountNumber);
               UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT0000"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
           }else if (userBankAccountNumber.length()==4) {
               System.out.println("HI4");
@@ -287,10 +283,9 @@ public class AuthController {
               System.out.println("userBankAccountNumber4 4  = "+userBankAccountNumber);
               UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT0000"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
           }else if (userBankAccountNumber.length()==5) {
               System.out.println("HI5");
@@ -298,10 +293,9 @@ public class AuthController {
               System.out.println("userBankAccountNumber5 5  = "+userBankAccountNumber);
               UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT000"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
           }else if (userBankAccountNumber.length()==6) {
               System.out.println("HI6");
@@ -309,10 +303,9 @@ public class AuthController {
               System.out.println("userBankAccountNumber6 6  = "+userBankAccountNumber);
               UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT00"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
           }else if (userBankAccountNumber.length()==7) {
               System.out.println("HI7");
@@ -320,10 +313,9 @@ public class AuthController {
               System.out.println("userBankAccountNumber7 7 = "+userBankAccountNumber);
               UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT0"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
           }else if (userBankAccountNumber.length()==8) {
               System.out.println("HI8");
@@ -331,10 +323,9 @@ public class AuthController {
               System.out.println("userBankAccountNumber 8 8 = "+userBankAccountNumber);
               UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
           }else if (userBankAccountNumber.length()==9) {
                 System.out.println("HI9");
@@ -345,10 +336,9 @@ public class AuthController {
               System.out.println("userBankAccountMaster1 = =  8 8 8 8 "+userBankAccountMaster1);
 
               if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
+                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
                 userBankAccountNumber = String.valueOf(userBankNumber);
                 userBankAccountNumber = "AUNLT"+userBankAccountNumber;
-//                userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
               }
 
             }
@@ -361,38 +351,9 @@ public class AuthController {
           this.userBankAccountRepository.save(userBankAccountMaster);
         }
 
-//        else if (accountTypeMaster1.getAccountTypeName().equalsIgnoreCase("Pigmy Loan")){
-//            Integer userBankAccountNumber = AccountNumberGeneration.pigmyAccountNumberGeneration();
-//            UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
-//            userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
-//            userBankAccountMaster.setUser(user1);
-////          userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
-//            userBankAccountMaster.setDate(new Date());
-//            userBankAccountMaster.setStatus("Active");
-//            this.userBankAccountRepository.save(userBankAccountMaster);
-//        } else if (accountTypeMaster1.getAccountTypeName().equalsIgnoreCase(" Recurring Deposit")) {
-//            Integer userBankAccountNumber = AccountNumberGeneration.recurringDepositAccount();
-//            UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
-//            userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
-//            userBankAccountMaster.setUser(user1);
-////          userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
-//            userBankAccountMaster.setDate(new Date());
-//            userBankAccountMaster.setStatus("Active");
-//            this.userBankAccountRepository.save(userBankAccountMaster);
-//        }
-
       }
     }
 
-//    registrationResponse.setRole(user1.getRoles().stream().findFirst().get().getName().name());
-//    BeanUtils.copyProperties(user1,registrationResponse);
-//    registrationResponse.setId(user1.getId());
-//    registrationResponse.setRegistrationDate(user1.getRegistrationDate());
-
-//    if (list!=null){
-//      List<AccountTypeMaster> accountTypeMasterList = userAccountMasterDao.getAllAccountTypeMasterByUser(user1.getId());
-//      registrationResponse.setAccountTypeMasterList(accountTypeMasterList);
-//    }
     return new ResponseEntity(registrationResponse, HttpStatus.OK);
   }
   @PostMapping(value = "/forgotPassword")

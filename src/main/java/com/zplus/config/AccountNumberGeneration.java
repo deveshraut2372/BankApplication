@@ -14,26 +14,10 @@ public class AccountNumberGeneration {
 
     static Random random = new Random();
 
-    public static String bankAccountNumberGenerator(){
-        return null;
-    }
-
-    public static Integer pigmyAccountNumberGeneration(){
+    public static Integer bankAccountNumberGenerator(){
         Integer randomNumber= random.nextInt(999999999);
-        Integer pigmy =randomNumber;
-        return pigmy;
-    }
-
-    public static Integer fixedDepositAccountNumberGeneration(){
-        Integer randomNumber= random.nextInt(999999999);
-        Integer fixed = randomNumber;
-        return fixed;
-    }
-
-    public static Integer recurringDepositAccount(){
-        Integer randomNumber= random.nextInt(99999999);
-        Integer recurring = randomNumber;
-        return recurring;
+        Integer bankAccountNumber =randomNumber;
+        return bankAccountNumber;
     }
 
 

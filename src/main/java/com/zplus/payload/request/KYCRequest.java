@@ -11,6 +11,12 @@ public class KYCRequest {
 
     private String fullName;
 
+    private String userMobNo;
+
+    private String bAccountNumber;
+
+    private String ifscCode;
+
     private String gender;
 
     private Date dateOfBirth;
