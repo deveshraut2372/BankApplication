@@ -12,6 +12,14 @@ public class FromManagementUpdateKYCRequest {
 
     private String gender;
 
+    private String fullName;
+
+    private String userMobNo;
+
+    private String bAccountNumber;
+
+    private String ifscCode;
+
     private Date dateOfBirth;
 
     private String nomineeFullName;

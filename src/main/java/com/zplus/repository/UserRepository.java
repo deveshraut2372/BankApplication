@@ -55,7 +55,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
   @Query("select new com.zplus.payload.response.UserRes(um.id,um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.referenceName,um.referenceMobile,um.registrationDate)  from User as um where um.roleId=3 and um.status='Active'")
   List<UserRes> getAllActiveAgents();
 
-  @Query("select new com.zplus.payload.response.PendingKYCResponse(um.id,um.kycStatus) from User as um where um.kycStatus='Pending' and um.roleId=2 ")
+  @Query("select new com.zplus.payload.response.PendingKYCResponse(um.id,um.email,um.registrationDate,um.fullName,um.userMobNo,um.bAccountNumber,um.ifscCode,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.address,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.referenceName,um.referenceMobile,um.aadhaarFront,um.aadhaarBack,um.panCardFront,um.passbookFront,um.photo) from User as um where um.kycStatus='Pending' and um.roleId=2 ")
     List<PendingKYCResponse> getAllPendingKYCResponse(String pending);
 
   @Query("select new com.zplus.payload.response.ApplyingKYCResponse(um.id,um.kycStatus) from User as um where um.kycStatus='Applying' and um.roleId=2 ")

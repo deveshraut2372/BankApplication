@@ -14,6 +14,7 @@ import com.zplus.repository.*;
 import com.zplus.services.UserMasterService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,7 +67,7 @@ public class AuthController {
   RefreshTokenService refreshTokenService;
   @Autowired
   private RefreshTokenRepository refreshTokenRepository;
-  
+
   @PostMapping("/signin")
   public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -79,10 +80,10 @@ public class AuthController {
       mainResDto.setMessage("Error: Mobile number is Invalid!");
       return ResponseEntity.badRequest().body(mainResDto);
 
-    }else {
+    } else {
       user = this.userRepository.findByUserMobNo(loginRequest.getUserMobNo()).get();
-      dPassword= user.getPassword();
-      if (!encoder.matches(loginRequest.getPassword(),dPassword)){
+      dPassword = user.getPassword();
+      if (!encoder.matches(loginRequest.getPassword(), dPassword)) {
         mainResDto.setResponseCode(HttpStatus.BAD_REQUEST.value());
         mainResDto.setFlag(false);
         mainResDto.setMessage("Error: password is Invalid!");
@@ -94,35 +95,35 @@ public class AuthController {
     Integer responseCode;
     Boolean flag;
 
-    if(userRepository.existsByUserMobNo(loginRequest.getUserMobNo())){
-      if (encoder.matches(loginRequest.getPassword(),dPassword)){
+    if (userRepository.existsByUserMobNo(loginRequest.getUserMobNo())) {
+      if (encoder.matches(loginRequest.getPassword(), dPassword)) {
         System.out.println("login successfully");
         message = "login successfully";
         responseCode = HttpStatus.OK.value();
         flag = true;
-      }else {
+      } else {
         message = "Invalid password ";
         responseCode = HttpStatus.BAD_REQUEST.value();
         flag = false;
       }
-    }else {
+    } else {
       message = "mobile no. not found";
       responseCode = HttpStatus.BAD_REQUEST.value();
       flag = false;
     }
 
     Authentication authentication = authenticationManager
-        .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserMobNo(), loginRequest.getPassword()));
+            .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUserMobNo(), loginRequest.getPassword()));
     SecurityContextHolder.getContext().setAuthentication(authentication);
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     String jwt = jwtUtils.generateJwtToken(userDetails);
     List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-        .collect(Collectors.toList());
-    String role=roles.get(0);
+            .collect(Collectors.toList());
+    String role = roles.get(0);
 
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
     return ResponseEntity.ok(new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-            userDetails.getEmail(), userDetails.getUserMobNo(), userDetails.getStatus(), role,message,responseCode,flag));
+            userDetails.getEmail(), userDetails.getUserMobNo(), userDetails.getStatus(), role, message, responseCode, flag));
   }
 
   @PostMapping("/registration")
@@ -148,17 +149,17 @@ public class AuthController {
     Integer responseCode;
     Boolean flag;
 
-    User user =new User();
+    User user = new User();
     user.setEmail(signUpRequest.getEmail());
     user.setUserMobNo(signUpRequest.getUserMobNo());
     user.setStatus("Active");
-    BeanUtils.copyProperties(signUpRequest,user);
+    BeanUtils.copyProperties(signUpRequest, user);
     String strRoles = signUpRequest.getRole();
     Set<Role> roles = new HashSet<>();
 
     if (strRoles == null) {
       Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-          .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
       user.setRoleId(2);
       roles.add(userRole);
       user.setRoles(roles);
@@ -171,10 +172,10 @@ public class AuthController {
       this.userRepository.save(user);
       return new ResponseEntity(mainResDto, HttpStatus.OK);
     } else {
-        switch (strRoles) {
+      switch (strRoles) {
         case "ROLE_ADMIN":
           Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                  .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(adminRole);
           user.setRoleId(1);
 
@@ -186,33 +187,33 @@ public class AuthController {
           registrationResponse.setFlag(flag);
           break;
 
-          case "ROLE_USER":
+        case "ROLE_USER":
           Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                  .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(userRole);
-            user.setRoleId(2);
+          user.setRoleId(2);
 
-            message = "user registered successfully";
-            responseCode = HttpStatus.OK.value();
-            flag = true;
-            registrationResponse.setMessage(message);
-            registrationResponse.setResponseCode(responseCode);
-            registrationResponse.setFlag(flag);
+          message = "user registered successfully";
+          responseCode = HttpStatus.OK.value();
+          flag = true;
+          registrationResponse.setMessage(message);
+          registrationResponse.setResponseCode(responseCode);
+          registrationResponse.setFlag(flag);
           break;
 
-          case "ROLE_AGENT":
-            Role agentRole = roleRepository.findByName(ERole.ROLE_AGENT)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(agentRole);
-            user.setRoleId(3);
+        case "ROLE_AGENT":
+          Role agentRole = roleRepository.findByName(ERole.ROLE_AGENT)
+                  .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+          roles.add(agentRole);
+          user.setRoleId(3);
 
-            message = "agent registered successfully";
-            responseCode = HttpStatus.OK.value();
-            flag = true;
-            registrationResponse.setMessage(message);
-            registrationResponse.setResponseCode(responseCode);
-            registrationResponse.setFlag(flag);
-        }
+          message = "agent registered successfully";
+          responseCode = HttpStatus.OK.value();
+          flag = true;
+          registrationResponse.setMessage(message);
+          registrationResponse.setResponseCode(responseCode);
+          registrationResponse.setFlag(flag);
+      }
     }
 
     System.out.println(roles);
@@ -220,132 +221,131 @@ public class AuthController {
     user.setRegistrationDate(new Date());
     user.setKycStatus("Pending");
     String name = signUpRequest.getFullName();
-     name = name.substring(0,4);
-     name = name.toUpperCase();
+    name = name.substring(0, 4);
+    name = name.toUpperCase();
 
-     Integer pass = PasswordGeneration.passwordGeneration();
-      System.out.println("USER AUTO PASS = "+name+pass);
-    user.setPassword(encoder.encode(name+pass));
-    System.out.println("User Password = "+user.getPassword());
+    Integer pass = PasswordGeneration.passwordGeneration();
+    System.out.println("USER AUTO PASS = " + name + pass);
+    user.setPassword(encoder.encode(name + pass));
+    System.out.println("User Password = " + user.getPassword());
     User user1 = userRepository.save(user);
 
     List<AccountTypeIdsRequest> list = signUpRequest.getAccountTypeIds();
     System.out.println(list);
-    if (list!=null){
-      for(AccountTypeIdsRequest accountTypeId : signUpRequest.getAccountTypeIds() )
-      {
+    if (list != null) {
+      for (AccountTypeIdsRequest accountTypeId : signUpRequest.getAccountTypeIds()) {
         AccountTypeMaster accountTypeMaster = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
-        UserAccountMaster userAccountMaster=new UserAccountMaster();
+        UserAccountMaster userAccountMaster = new UserAccountMaster();
         userAccountMaster.setUser(user1);
         userAccountMaster.setAccountTypeMaster(accountTypeMaster);
         userAccountMasterDao.save(userAccountMaster);
 
         AccountTypeMaster accountTypeMaster1 = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
-        if (accountTypeMaster1!=null){
-            System.out.println("HI HI");
+        if (accountTypeMaster1 != null) {
+          System.out.println("HI HI");
           UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
           Integer userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
           String userBankAccountNumber = String.valueOf(userBankNumber);
-            if (userBankAccountNumber.length()==1){
-            userBankAccountNumber = "AUNLT0000000"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber1 1 = "+userBankAccountNumber);
-              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT0000000"+userBankAccountNumber;
-              }
-          } else if (userBankAccountNumber.length()==2) {
-              System.out.println("HI2");
-            userBankAccountNumber = "AUNLT000000"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber 2 2 = "+userBankAccountNumber);
-              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT000000"+userBankAccountNumber;
-              }
-          }else if (userBankAccountNumber.length()==3) {
-              System.out.println("HI3");
-            userBankAccountNumber = "AUNLT00000"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber3 3  = "+userBankAccountNumber);
-              userBankAccountNumber = "AUNLT0000"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber4 4  = "+userBankAccountNumber);
-              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT0000"+userBankAccountNumber;
-              }
-          }else if (userBankAccountNumber.length()==4) {
-              System.out.println("HI4");
-            userBankAccountNumber = "AUNLT0000"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber4 4  = "+userBankAccountNumber);
-              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT0000"+userBankAccountNumber;
-              }
-          }else if (userBankAccountNumber.length()==5) {
-              System.out.println("HI5");
-            userBankAccountNumber = "AUNLT000"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber5 5  = "+userBankAccountNumber);
-              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT000"+userBankAccountNumber;
-              }
-          }else if (userBankAccountNumber.length()==6) {
-              System.out.println("HI6");
-            userBankAccountNumber = "AUNLT00"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber6 6  = "+userBankAccountNumber);
-              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT00"+userBankAccountNumber;
-              }
-          }else if (userBankAccountNumber.length()==7) {
-              System.out.println("HI7");
-            userBankAccountNumber = "AUNLT0"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber7 7 = "+userBankAccountNumber);
-              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT0"+userBankAccountNumber;
-              }
-          }else if (userBankAccountNumber.length()==8) {
-              System.out.println("HI8");
-            userBankAccountNumber = "AUNLT"+userBankAccountNumber;
-              System.out.println("userBankAccountNumber 8 8 = "+userBankAccountNumber);
-              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT"+userBankAccountNumber;
-              }
-          }else if (userBankAccountNumber.length()==9) {
-                System.out.println("HI9");
-                userBankAccountNumber = "AUNLT"+userBankAccountNumber;
-                System.out.println("userBankAccountNumber 9 9= "+userBankAccountNumber);
-
-                UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-              System.out.println("userBankAccountMaster1 = =  8 8 8 8 "+userBankAccountMaster1);
-
-              if (userBankAccountMaster1!=null){
-                userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-                userBankAccountNumber = String.valueOf(userBankNumber);
-                userBankAccountNumber = "AUNLT"+userBankAccountNumber;
-              }
-
+          if (userBankAccountNumber.length() == 1) {
+            userBankAccountNumber = "AUNLT0000000" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber1 1 = " + userBankAccountNumber);
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT0000000" + userBankAccountNumber;
             }
+          } else if (userBankAccountNumber.length() == 2) {
+            System.out.println("HI2");
+            userBankAccountNumber = "AUNLT000000" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber 2 2 = " + userBankAccountNumber);
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT000000" + userBankAccountNumber;
+            }
+          } else if (userBankAccountNumber.length() == 3) {
+            System.out.println("HI3");
+            userBankAccountNumber = "AUNLT00000" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber3 3  = " + userBankAccountNumber);
+            userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber4 4  = " + userBankAccountNumber);
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
+            }
+          } else if (userBankAccountNumber.length() == 4) {
+            System.out.println("HI4");
+            userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber4 4  = " + userBankAccountNumber);
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
+            }
+          } else if (userBankAccountNumber.length() == 5) {
+            System.out.println("HI5");
+            userBankAccountNumber = "AUNLT000" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber5 5  = " + userBankAccountNumber);
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT000" + userBankAccountNumber;
+            }
+          } else if (userBankAccountNumber.length() == 6) {
+            System.out.println("HI6");
+            userBankAccountNumber = "AUNLT00" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber6 6  = " + userBankAccountNumber);
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT00" + userBankAccountNumber;
+            }
+          } else if (userBankAccountNumber.length() == 7) {
+            System.out.println("HI7");
+            userBankAccountNumber = "AUNLT0" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber7 7 = " + userBankAccountNumber);
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT0" + userBankAccountNumber;
+            }
+          } else if (userBankAccountNumber.length() == 8) {
+            System.out.println("HI8");
+            userBankAccountNumber = "AUNLT" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber 8 8 = " + userBankAccountNumber);
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT" + userBankAccountNumber;
+            }
+          } else if (userBankAccountNumber.length() == 9) {
+            System.out.println("HI9");
+            userBankAccountNumber = "AUNLT" + userBankAccountNumber;
+            System.out.println("userBankAccountNumber 9 9= " + userBankAccountNumber);
+
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+            System.out.println("userBankAccountMaster1 = =  8 8 8 8 " + userBankAccountMaster1);
+
+            if (userBankAccountMaster1 != null) {
+              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankAccountNumber = String.valueOf(userBankNumber);
+              userBankAccountNumber = "AUNLT" + userBankAccountNumber;
+            }
+
+          }
           userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
           userBankAccountMaster.setUser(user1);
           userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
-            System.out.println("USER BANK ACCOUNT NUMBER =="+userBankAccountMaster.getUserBankAccountNumber());
+          System.out.println("USER BANK ACCOUNT NUMBER ==" + userBankAccountMaster.getUserBankAccountNumber());
           userBankAccountMaster.setDate(new Date());
           userBankAccountMaster.setStatus("Active");
           this.userBankAccountRepository.save(userBankAccountMaster);
@@ -356,112 +356,103 @@ public class AuthController {
 
     return new ResponseEntity(registrationResponse, HttpStatus.OK);
   }
-  @PostMapping(value = "/forgotPassword")
-  public ResponseEntity forgotPassword(@RequestBody ForgotPasswordReq forgotPasswordReq)
-  {
-    MainResDto mainResDto= userMasterService.forgotPassword1(forgotPasswordReq);
 
-    if (mainResDto!=null){
+  @PostMapping(value = "/forgotPassword")
+  public ResponseEntity forgotPassword(@RequestBody ForgotPasswordReq forgotPasswordReq) {
+    MainResDto mainResDto = userMasterService.forgotPassword1(forgotPasswordReq);
+
+    if (mainResDto != null) {
       return new ResponseEntity(mainResDto, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(mainResDto, HttpStatus.BAD_REQUEST);
     }
   }
+
   @PostMapping(value = "/VerificationOtpReq")
-  public ResponseEntity VerificationOtpReq(@RequestBody VerificationOtpReq verificationOtpReq)
-  {
-    OtpVerificationResponse otpVerificationResponse=userMasterService.VerificationOtp(verificationOtpReq);
-    if(otpVerificationResponse!=null)
-    {
-      return new ResponseEntity(otpVerificationResponse,HttpStatus.OK);
-    }else
-      return new ResponseEntity(otpVerificationResponse,HttpStatus.BAD_REQUEST);
+  public ResponseEntity VerificationOtpReq(@RequestBody VerificationOtpReq verificationOtpReq) {
+    OtpVerificationResponse otpVerificationResponse = userMasterService.VerificationOtp(verificationOtpReq);
+    if (otpVerificationResponse != null) {
+      return new ResponseEntity(otpVerificationResponse, HttpStatus.OK);
+    } else
+      return new ResponseEntity(otpVerificationResponse, HttpStatus.BAD_REQUEST);
   }
+
   @PostMapping(value = "/newpassword")
   public ResponseEntity ChangePassword(@RequestBody ChangePasswordReq changePasswordReq) {
     ChangePasswordRes changePasswordRes = userMasterService.ChangePassword(changePasswordReq);
 
-    if (changePasswordRes!=null){
+    if (changePasswordRes != null) {
       return new ResponseEntity(changePasswordRes, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(changePasswordRes, HttpStatus.BAD_REQUEST);
     }
   }
 
   @PutMapping("/updateUser")
-  public ResponseEntity updateUser(@RequestBody UpdateUserRequest  updateUserRequest)
-  {
+  public ResponseEntity updateUser(@RequestBody UpdateUserRequest updateUserRequest) {
     UpdateUserResponse updateUserResponse = userMasterService.updateUser(updateUserRequest);
-    if(updateUserResponse!=null)
-    {
+    if (updateUserResponse != null) {
       return new ResponseEntity(updateUserResponse, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(updateUserResponse, HttpStatus.BAD_REQUEST);
     }
   }
 
   @GetMapping(value = "/getuserbyid/{id}")
-  public ResponseEntity getUserByUserId(@PathVariable("id") Long id)
-  {
-    UserRes userRes=new UserRes();
-    userRes=userMasterService.getUserByUserId(id);
+  public ResponseEntity getUserByUserId(@PathVariable("id") Long id) {
+    UserRes userRes = new UserRes();
+    userRes = userMasterService.getUserByUserId(id);
 
-    if(userRes!=null)
-    {
-      return  new ResponseEntity(userRes,HttpStatus.OK);
-    }
-    else
-    {
-      return new ResponseEntity(userRes,HttpStatus.BAD_REQUEST);
+    if (userRes != null) {
+      return new ResponseEntity(userRes, HttpStatus.OK);
+    } else {
+      return new ResponseEntity(userRes, HttpStatus.BAD_REQUEST);
     }
   }
 
   @GetMapping(value = "/getalluserbyrole/{role}")
 //  @PreAuthorize("hasRole('Admin')")
-  public  ResponseEntity getAllUser(@PathVariable String role)
-  {
-    List<UserRes> list=userMasterService.getAllUser(role);
+  public ResponseEntity getAllUser(@PathVariable String role) {
+    List<UserRes> list = userMasterService.getAllUser(role);
 
-    if (list!=null){
+    if (list != null) {
       return new ResponseEntity(list, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(list, HttpStatus.BAD_REQUEST);
     }
   }
 
   @GetMapping("/getallusers")
-  public  ResponseEntity getAAllUsers()
-  {
-    List<UserRes> list =userMasterService.getAllUsers();
-    return new ResponseEntity( list,HttpStatus.OK);
+  public ResponseEntity getAAllUsers() {
+    List<UserRes> list = userMasterService.getAllUsers();
+    return new ResponseEntity(list, HttpStatus.OK);
   }
 
   @GetMapping(value = "/getallonlyactiveusers")
-  public ResponseEntity getActiveUser()
-  {
-    UserRes userRes=new UserRes();
-    List<UserRes> userResList=userMasterService.getActiveUser();
-    return new ResponseEntity(userResList,HttpStatus.OK);
+  public ResponseEntity getActiveUser() {
+    UserRes userRes = new UserRes();
+    List<UserRes> userResList = userMasterService.getActiveUser();
+    return new ResponseEntity(userResList, HttpStatus.OK);
   }
 
   @GetMapping("/getallagents")
-  public ResponseEntity getAllAgents(){
-      List<UserRes> list = this.userMasterService.getAllAgents();
+  public ResponseEntity getAllAgents() {
+    List<UserRes> list = this.userMasterService.getAllAgents();
 
-      if (list!=null){
-        return new ResponseEntity(list, HttpStatus.OK);
-      }else {
-        return new ResponseEntity(list, HttpStatus.BAD_REQUEST);
-      }
+    if (list != null) {
+      return new ResponseEntity(list, HttpStatus.OK);
+    } else {
+      return new ResponseEntity(list, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @GetMapping("/getallactiveagents")
-  public ResponseEntity getAllActiveAgents(){
+  public ResponseEntity getAllActiveAgents() {
     List<UserRes> list = this.userMasterService.getAllActiveAgentsList();
 
-    if (list!=null){
+    if (list != null) {
       return new ResponseEntity(list, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(list, HttpStatus.BAD_REQUEST);
     }
   }
@@ -471,14 +462,14 @@ public class AuthController {
     String requestRefreshToken = request.getRefreshToken();
 
     return refreshTokenService.findByToken(requestRefreshToken)
-        .map(refreshTokenService::verifyExpiration)
-        .map(RefreshToken::getUser)
-        .map(user -> {
-          String token = jwtUtils.generateTokenFromUsername(user.getEmail());
-          return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
-        })
-        .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-            "Refresh token is not in database!"));
+            .map(refreshTokenService::verifyExpiration)
+            .map(RefreshToken::getUser)
+            .map(user -> {
+              String token = jwtUtils.generateTokenFromUsername(user.getEmail());
+              return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
+            })
+            .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
+                    "Refresh token is not in database!"));
   }
 
   @PostMapping("/signout")
@@ -490,123 +481,121 @@ public class AuthController {
   }
 
   @GetMapping(value = "/editByUserId/{id}")
-  public ResponseEntity editByUserId(@PathVariable("id") Long id)
-  {
-    User user=new User();
-     user=userRepository.findById(id).get();
-     return new ResponseEntity(user,HttpStatus.OK);
+  public ResponseEntity editByUserId(@PathVariable("id") Long id) {
+    User user = new User();
+    user = userRepository.findById(id).get();
+    return new ResponseEntity(user, HttpStatus.OK);
   }
 
   @PutMapping("/createkyc")
-  public ResponseEntity create(@RequestBody KYCRequest kycRequest){
+  public ResponseEntity create(@RequestBody KYCRequest kycRequest) {
     KYCResponse kycResponse = this.userMasterService.createKyc(kycRequest);
 
-    if (kycResponse!=null){
+    if (kycResponse != null) {
       return new ResponseEntity(kycResponse, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(kycResponse, HttpStatus.BAD_REQUEST);
     }
   }
 
   @PutMapping("/changepassword")
-  public ResponseEntity changePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest){
+  public ResponseEntity changePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
     Boolean flag = this.userMasterService.updatePassword(updatePasswordRequest);
 
-    if (Boolean.TRUE.equals(flag)){
+    if (Boolean.TRUE.equals(flag)) {
       return new ResponseEntity(flag, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(flag, HttpStatus.BAD_REQUEST);
     }
   }
 
   @GetMapping("/getallpendingkyc")
-  public ResponseEntity getAllPendingKyc(){
+  public ResponseEntity getAllPendingKyc() {
     List<PendingKYCResponse> pendingKYCResponses = this.userMasterService.getAllPendingKYC();
 
-    if (pendingKYCResponses!=null){
+    if (pendingKYCResponses != null) {
       return new ResponseEntity(pendingKYCResponses, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(pendingKYCResponses, HttpStatus.BAD_REQUEST);
     }
   }
 
   @GetMapping("/applyingkyclist")
-  public ResponseEntity getApplyingKYC(){
+  public ResponseEntity getApplyingKYC() {
     List<ApplyingKYCResponse> applyingKYCResponses = this.userMasterService.getApplyingKyc();
-      if (applyingKYCResponses!=null){
-        return new ResponseEntity(applyingKYCResponses, HttpStatus.OK);
-      }else {
-        return new ResponseEntity(applyingKYCResponses, HttpStatus.BAD_REQUEST);
-      }
+    if (applyingKYCResponses != null) {
+      return new ResponseEntity(applyingKYCResponses, HttpStatus.OK);
+    } else {
+      return new ResponseEntity(applyingKYCResponses, HttpStatus.BAD_REQUEST);
+    }
 
   }
 
   @PutMapping("/updatekyc")
-  public ResponseEntity update(@RequestBody KYCRequest kycRequest){
+  public ResponseEntity update(@RequestBody KYCRequest kycRequest) {
     KYCResponse kycResponse = this.userMasterService.updateKYC(kycRequest);
 
-    if (kycResponse!=null){
-      return new ResponseEntity(kycResponse,HttpStatus.OK);
-    }else {
-      return new ResponseEntity(kycResponse,HttpStatus.BAD_REQUEST);
+    if (kycResponse != null) {
+      return new ResponseEntity(kycResponse, HttpStatus.OK);
+    } else {
+      return new ResponseEntity(kycResponse, HttpStatus.BAD_REQUEST);
     }
   }
 
 
   @GetMapping("/acceptkyc/{id}/{agentId}")
-  public ResponseEntity acceptKYC(@PathVariable("id") Long id, @PathVariable("agentId") Long id1){
-      AcceptKYCResponse acceptKYCResponse = this.userMasterService.acceptKYC(id,id1);
+  public ResponseEntity acceptKYC(@PathVariable("id") Long id, @PathVariable("agentId") Long id1) {
+    AcceptKYCResponse acceptKYCResponse = this.userMasterService.acceptKYC(id, id1);
 
-      if (acceptKYCResponse!=null){
-        return new ResponseEntity(acceptKYCResponse, HttpStatus.OK);
-      }else {
-        return new ResponseEntity(acceptKYCResponse, HttpStatus.BAD_REQUEST);
-      }
+    if (acceptKYCResponse != null) {
+      return new ResponseEntity(acceptKYCResponse, HttpStatus.OK);
+    } else {
+      return new ResponseEntity(acceptKYCResponse, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @PutMapping("/rejectkyc")
-  public ResponseEntity rejectKYC(@RequestBody RejectKYCRequest rejectKYCRequest){
+  public ResponseEntity rejectKYC(@RequestBody RejectKYCRequest rejectKYCRequest) {
     RejectKYCResponse rejectKYCResponse = this.userMasterService.rejectKYC(rejectKYCRequest);
 
-    if (rejectKYCResponse!=null){
+    if (rejectKYCResponse != null) {
       return new ResponseEntity(rejectKYCResponse, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(rejectKYCResponse, HttpStatus.BAD_REQUEST);
     }
   }
 
 
   @PutMapping("/updatekycfrommanagement")
-  public ResponseEntity updateKYCFromManagement(@RequestBody FromManagementUpdateKYCRequest fromManagementUpdateKYCRequest){
+  public ResponseEntity updateKYCFromManagement(@RequestBody FromManagementUpdateKYCRequest fromManagementUpdateKYCRequest) {
     KYCResponse kycResponse = this.userMasterService.fromManagementUpdateKYC(fromManagementUpdateKYCRequest);
 
-    if (kycResponse!=null){
+    if (kycResponse != null) {
       return new ResponseEntity(kycResponse, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(kycResponse, HttpStatus.BAD_REQUEST);
     }
   }
 
   @GetMapping("/getstatuswisekyclist/{kycStatus}")
-  public ResponseEntity getStatusWiseKYCList(@PathVariable("kycStatus") String kycStatus){
+  public ResponseEntity getStatusWiseKYCList(@PathVariable("kycStatus") String kycStatus) {
     List<KYCResponse> kycResponse = this.userMasterService.getStatusWiseKYCList(kycStatus);
 
-    if (kycResponse!=null){
+    if (kycResponse != null) {
       return new ResponseEntity(kycResponse, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(kycResponse, HttpStatus.BAD_REQUEST);
     }
   }
 
   @GetMapping("/getidwisekycdetails/{id}")
-  public ResponseEntity getIdWiseKYCDetails(@PathVariable("id") Long id){
-      KycDetailsResponse kycDetailsResponse = this.userMasterService.getIdWiseKycDetails(id);
+  public ResponseEntity getIdWiseKYCDetails(@PathVariable("id") Long id) {
+    KycDetailsResponse kycDetailsResponse = this.userMasterService.getIdWiseKycDetails(id);
 
     if (kycDetailsResponse != null) {
       return new ResponseEntity(kycDetailsResponse, HttpStatus.OK);
-    }else {
+    } else {
       return new ResponseEntity(kycDetailsResponse, HttpStatus.BAD_REQUEST);
     }
   }
-
 }
