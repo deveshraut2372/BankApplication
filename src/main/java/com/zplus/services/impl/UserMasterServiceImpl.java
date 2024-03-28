@@ -187,42 +187,86 @@ public class UserMasterServiceImpl implements UserMasterService {
     }
 
     @Override
-    public KYCResponse createKyc(KYCRequest kycRequest) {
-        KYCResponse kycResponse = new KYCResponse();
+    public MainResDto  createKyc(KYCRequest kycRequest) {
+        MainResDto mainResDto = new MainResDto();
         User user = this.userRepository.findById(kycRequest.getId()).get();
-        Date NomineeDateOfBirth = kycRequest.getNomineeDateOfBirth();
-        LocalDate ndob = NomineeDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate currentDate = LocalDate.now();
 
-        Date userDateOfBirth = kycRequest.getDateOfBirth();
-        LocalDate udob = userDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Long managementId = kycRequest.getManagementId();
 
-        Period period = Period.between(ndob,currentDate);
-        int nomineeAge = period.getYears();
-        System.out.println("nomineeAge = "+nomineeAge);
+        if (managementId!=null){
+            User user2 = this.userRepository.findById(kycRequest.getManagementId()).get();
 
-        Period period1 = Period.between(udob,currentDate);
-        int userAge = period1.getYears();
-        System.out.println("AGE userAge = "+userAge);
+            Date NomineeDateOfBirth = kycRequest.getNomineeDateOfBirth();
+            LocalDate ndob = NomineeDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate currentDate = LocalDate.now();
 
-        BeanUtils.copyProperties(kycRequest,user);
-        try {
-            user.setKycStatus("Applying");
-            user.setKycDate(new Date());
-            user.setAge(userAge);
-            user.setNomineeAge(nomineeAge);
-            User user1 = this.userRepository.save(user);
-            BeanUtils.copyProperties(user1,kycResponse);
-            kycResponse.setMessage("KYC Updated");
-            kycResponse.setResponseCode(HttpStatus.OK.value());
-            kycResponse.setFlag(true);
-            return kycResponse;
-        }catch (Exception e){
-            e.printStackTrace();
-            kycResponse.setMessage("KYC not updated");
-            kycResponse.setResponseCode(HttpStatus.BAD_REQUEST.value());
-            kycResponse.setFlag(false);
-            return kycResponse;
+            Date userDateOfBirth = kycRequest.getDateOfBirth();
+            LocalDate udob = userDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            Period period = Period.between(ndob,currentDate);
+            int nomineeAge = period.getYears();
+            System.out.println("nomineeAge = "+nomineeAge);
+
+            Period period1 = Period.between(udob,currentDate);
+            int userAge = period1.getYears();
+            System.out.println("AGE userAge = "+userAge);
+
+            BeanUtils.copyProperties(kycRequest,user);
+            try {
+                user.setKycStatus("Accepted");
+                user.setKycDate(new Date());
+                user.setKycAcceptedDate(new Date());
+                user.setAge(userAge);
+                user.setNomineeAge(nomineeAge);
+                 this.userRepository.save(user);
+//                kycResponse.setMessage("KYC created by "+user2.getRoles().stream().findFirst().get().getName().name());
+                mainResDto.setMessage("KYC Created by "+user2.getRoles().stream().findFirst().get().getName().name());
+                mainResDto.setResponseCode(HttpStatus.OK.value());
+                mainResDto.setFlag(true);
+                return mainResDto;
+            }catch (Exception e){
+                e.printStackTrace();
+                mainResDto.setMessage("KYC not created");
+                mainResDto.setResponseCode(HttpStatus.BAD_REQUEST.value());
+                mainResDto.setFlag(false);
+                return mainResDto;
+            }
+
+        }else {
+
+            Date NomineeDateOfBirth = kycRequest.getNomineeDateOfBirth();
+            LocalDate ndob = NomineeDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate currentDate = LocalDate.now();
+
+            Date userDateOfBirth = kycRequest.getDateOfBirth();
+            LocalDate udob = userDateOfBirth.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+            Period period = Period.between(ndob,currentDate);
+            int nomineeAge = period.getYears();
+            System.out.println("nomineeAge = "+nomineeAge);
+
+            Period period1 = Period.between(udob,currentDate);
+            int userAge = period1.getYears();
+            System.out.println("AGE userAge = "+userAge);
+
+            BeanUtils.copyProperties(kycRequest,user);
+            try {
+                user.setKycStatus("Applying");
+                user.setKycDate(new Date());
+                user.setAge(userAge);
+                user.setNomineeAge(nomineeAge);
+                this.userRepository.save(user);
+                mainResDto.setMessage("KYC created");
+                mainResDto.setResponseCode(HttpStatus.OK.value());
+                mainResDto.setFlag(true);
+                return mainResDto;
+            }catch (Exception e){
+                e.printStackTrace();
+                mainResDto.setMessage("KYC not updated");
+                mainResDto.setResponseCode(HttpStatus.BAD_REQUEST.value());
+                mainResDto.setFlag(false);
+                return mainResDto;
+            }
         }
     }
 
@@ -397,8 +441,14 @@ public class UserMasterServiceImpl implements UserMasterService {
             return kycDetailsResponse;
         }else {
             return new KycDetailsResponse(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
-                    null,null,null,null,null,null,null,null,null,null,null,null,null);
+                    null,null,null,null,null,null,null,null,null,null,null,null,null,null);
         }
+    }
+
+    @Override
+    public List<UserRes> getUsersListAddedByAdmin(Long id) {
+        List<UserRes> list = this.userRepository.getUsersListAddedByAdmin(id);
+        return list;
     }
 
 

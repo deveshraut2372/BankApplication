@@ -24,6 +24,10 @@ public class CollectionMaster {
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "mid")
+    private User managementMember;
+
+    @ManyToOne
     @JoinColumn(name = "accountTypeId")
     private AccountTypeMaster accountTypeMaster;
 

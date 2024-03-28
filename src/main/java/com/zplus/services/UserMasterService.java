@@ -30,7 +30,7 @@ public interface UserMasterService {
 
     List<UserRes> getAllActiveAgentsList();
 
-    KYCResponse createKyc(KYCRequest kycRequest);
+    MainResDto createKyc(KYCRequest kycRequest);
 
     Boolean updatePassword(UpdatePasswordRequest updatePasswordRequest);
 
@@ -49,4 +49,6 @@ public interface UserMasterService {
     List<KYCResponse> getStatusWiseKYCList(String kycStatus);
 
     KycDetailsResponse getIdWiseKycDetails(Long id);
+
+    List<UserRes> getUsersListAddedByAdmin(Long id);
 }

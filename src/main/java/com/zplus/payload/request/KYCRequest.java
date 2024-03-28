@@ -9,13 +9,13 @@ public class KYCRequest {
 
     private Long id;
 
+    private Long managementId;
+
     private String fullName;
 
     private String userMobNo;
 
     private String bAccountNumber;
-
-    private String ifscCode;
 
     private String gender;
 

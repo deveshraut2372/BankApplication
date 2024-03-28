@@ -1,17 +1,19 @@
-package com.zplus.payload.request;
+package com.zplus.payload.response;
 
-import lombok.Data;
+import lombok.*;
 
 import java.util.Date;
 
 @Data
-public class CollectionAmountRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class CollectionSearchingResponse {
 
     private Integer collectionId;
 
     private Long id;
-
-    private Long managementId;
 
     private String userBankAccountNumber;
 
@@ -20,5 +22,4 @@ public class CollectionAmountRequest {
     private String paymentMode;
 
     private Date collectionDate;
-
 }

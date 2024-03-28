@@ -27,6 +27,8 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	private Long managementMember;
+
 	@NotBlank
 	@Size(max = 20)
 	private String username;
@@ -44,8 +46,6 @@ public class User {
 	private String userMobNo;
 
 	private String bAccountNumber;
-
-	private String ifscCode;
 
 	@Column
 	private String status;

@@ -1,6 +1,8 @@
 package com.zplus.controllers;
 
 import com.zplus.payload.request.CollectionAmountRequest;
+import com.zplus.payload.request.CollectionSearchingRequest;
+import com.zplus.payload.response.CollectionSearchingResponse;
 import com.zplus.payload.response.MainResDto;
 import com.zplus.services.impl.CollectionServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,4 +39,16 @@ public class CollectionController {
             return new ResponseEntity(mainResDto, HttpStatus.BAD_REQUEST);
         }
     }
+
+    @PostMapping("/searchingcollection")
+    public ResponseEntity searchingCollection(@RequestBody CollectionSearchingRequest collectionSearchingRequest){
+        CollectionSearchingResponse collectionSearchingResponse = this.collectionService.serachCollection(collectionSearchingRequest);
+
+        if (collectionSearchingResponse!=null){
+            return new ResponseEntity(collectionSearchingResponse,HttpStatus.OK);
+        }else {
+            return new ResponseEntity(collectionSearchingResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

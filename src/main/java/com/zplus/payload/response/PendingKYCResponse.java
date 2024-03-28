@@ -22,8 +22,6 @@ public class PendingKYCResponse {
 
     private String bAccountNumber;
 
-    private String ifscCode;
-
     private String gender;
 
     private Date dateOfBirth;

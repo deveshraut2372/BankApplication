@@ -14,6 +14,8 @@ import java.util.Date;
 public class KycDetailsResponse {
     private Long id;
 
+    private String userMobNo;
+
     private String fullName;
 
     private String gender;

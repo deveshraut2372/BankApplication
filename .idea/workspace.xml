@@ -4,30 +4,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ea45e621-2e00-465f-9ecb-8bf8f7c6fd83" name="Changes" comment="Kunal Pawar 23-03-2024 09.16 pm">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/controllers/BankAccountController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/controllers/CollectionController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/models/CollectionMaster.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/CollectionAmountRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/CreateBankAccountRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/response/CollectionResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/repository/CollectionRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/services/BankAccountService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/services/CollectionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/services/impl/BankAccountServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/services/impl/CollectionServiceImpl.java" afterDir="false" />
+    <list default="true" id="ea45e621-2e00-465f-9ecb-8bf8f7c6fd83" name="Changes" comment="Kunal Pawar 26-03-2024 06.37 pm">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/CollectionSearchingRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/response/CollectionSearchingResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/controllers/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/controllers/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/FromManagementUpdateKYCRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/FromManagementUpdateKYCRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/controllers/CollectionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/controllers/CollectionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/models/CollectionMaster.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/models/CollectionMaster.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/models/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/CollectionAmountRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/CollectionAmountRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/KYCRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/KYCRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/SignupRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/request/SignupRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/payload/response/KycDetailsResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/response/KycDetailsResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/payload/response/PendingKYCResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/payload/response/PendingKYCResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/repository/AccountTypeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/repository/AccountTypeRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/repository/CollectionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/repository/CollectionRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/repository/UserBankAccountRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/repository/UserBankAccountRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/services/CollectionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/services/CollectionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/services/UserMasterService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/services/UserMasterService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/services/impl/CollectionServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/services/impl/CollectionServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zplus/services/impl/UserMasterServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zplus/services/impl/UserMasterServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/controllers/AuthController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/controllers/AuthController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/payload/request/FromManagementUpdateKYCRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/payload/request/FromManagementUpdateKYCRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/models/CollectionMaster.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/models/CollectionMaster.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/models/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/models/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/payload/request/KYCRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/payload/request/KYCRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/payload/request/SignupRequest.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/payload/request/SignupRequest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/payload/response/KycDetailsResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/payload/response/KycDetailsResponse.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/payload/response/PendingKYCResponse.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/payload/response/PendingKYCResponse.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/repository/UserBankAccountRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/repository/UserBankAccountRepository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/repository/UserRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/repository/UserRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/services/UserMasterService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/services/UserMasterService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/zplus/services/impl/UserMasterServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/zplus/services/impl/UserMasterServiceImpl.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,7 +180,28 @@
       <option name="project" value="LOCAL" />
       <updated>1711208768646</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Kunal Pawar 26-03-2024 06.37 pm">
+      <created>1711458441857</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1711458441857</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Kunal Pawar 26-03-2024 06.37 pm">
+      <created>1711458456531</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1711458456531</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Kunal Pawar 26-03-2024 06.37 pm">
+      <created>1711458479817</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1711458479817</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -184,6 +211,7 @@
     <MESSAGE value="Kunal Pawar 21-03-2024 06.33 pm" />
     <MESSAGE value="Kunal Pawar 22-03-2024 06.33 pm" />
     <MESSAGE value="Kunal Pawar 23-03-2024 09.16 pm" />
-    <option name="LAST_COMMIT_MESSAGE" value="Kunal Pawar 23-03-2024 09.16 pm" />
+    <MESSAGE value="Kunal Pawar 26-03-2024 06.37 pm" />
+    <option name="LAST_COMMIT_MESSAGE" value="Kunal Pawar 26-03-2024 06.37 pm" />
   </component>
 </project>

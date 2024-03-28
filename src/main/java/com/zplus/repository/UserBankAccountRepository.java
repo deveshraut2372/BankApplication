@@ -18,4 +18,7 @@ public interface UserBankAccountRepository extends JpaRepository<UserBankAccount
 
     @Query("select ubam from UserBankAccountMaster as ubam where ubam.accountTypeMaster.accountTypeId=:accountTypeId and ubam.user.id=:id ")
     UserBankAccountMaster getByUserAccountTypeIdAndIdWise(@Param("accountTypeId") Integer accountTypeId,@Param("id") Long id);
+
+    @Query("select ubam from UserBankAccountMaster as ubam where ubam.user.id=:id ")
+    List<UserBankAccountMaster> findByIdUserId(@Param("id") Long id);
 }

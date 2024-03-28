@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -62,6 +64,9 @@ public class AuthController {
 
   @Autowired
   JwtUtils jwtUtils;
+
+  @Autowired
+  JavaMailSender mailSender;
 
   @Autowired
   RefreshTokenService refreshTokenService;
@@ -131,6 +136,8 @@ public class AuthController {
     MainResDto mainResDto = new MainResDto();
     RegistrationResponse registrationResponse = new RegistrationResponse();
 
+    User managementMember = this.userRepository.findById(signUpRequest.getManagementId()).get();
+
     if (userRepository.existsByUserMobNo(signUpRequest.getUserMobNo())) {
       mainResDto.setMessage("Error: mobileNo is already taken!");
       mainResDto.setResponseCode(HttpStatus.BAD_REQUEST.value());
@@ -163,6 +170,7 @@ public class AuthController {
       user.setRoleId(2);
       roles.add(userRole);
       user.setRoles(roles);
+      user.setManagementMember(managementMember.getId());
       message = "user registered successfully";
       responseCode = HttpStatus.OK.value();
       flag = true;
@@ -192,6 +200,7 @@ public class AuthController {
                   .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
           roles.add(userRole);
           user.setRoleId(2);
+          user.setManagementMember(managementMember.getId());
 
           message = "user registered successfully";
           responseCode = HttpStatus.OK.value();
@@ -228,6 +237,7 @@ public class AuthController {
     System.out.println("USER AUTO PASS = " + name + pass);
     user.setPassword(encoder.encode(name + pass));
     System.out.println("User Password = " + user.getPassword());
+    String tempPassword = name+pass;
     User user1 = userRepository.save(user);
 
     List<AccountTypeIdsRequest> list = signUpRequest.getAccountTypeIds();
@@ -246,6 +256,7 @@ public class AuthController {
           UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
           Integer userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
           String userBankAccountNumber = String.valueOf(userBankNumber);
+
           if (userBankAccountNumber.length() == 1) {
             userBankAccountNumber = "AUNLT0000000" + userBankAccountNumber;
             System.out.println("userBankAccountNumber1 1 = " + userBankAccountNumber);
@@ -341,6 +352,7 @@ public class AuthController {
               userBankAccountNumber = "AUNLT" + userBankAccountNumber;
             }
 
+
           }
           userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
           userBankAccountMaster.setUser(user1);
@@ -348,10 +360,32 @@ public class AuthController {
           System.out.println("USER BANK ACCOUNT NUMBER ==" + userBankAccountMaster.getUserBankAccountNumber());
           userBankAccountMaster.setDate(new Date());
           userBankAccountMaster.setStatus("Active");
-          this.userBankAccountRepository.save(userBankAccountMaster);
+          UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.save(userBankAccountMaster);
+          System.out.println("userBankAccountMaster1 = "+userBankAccountMaster1);
         }
-
       }
+
+      List<UserBankAccountMaster> userBankAccountMaster = this.userBankAccountRepository.findByIdUserId(user1.getId());
+     String accountNumber = null;
+     String accountTypeName = null;
+      for (UserBankAccountMaster bankAccountMaster : userBankAccountMaster) {
+        accountNumber = bankAccountMaster.getUserBankAccountNumber();
+        accountTypeName = bankAccountMaster.getAccountTypeMaster().getAccountTypeName();
+      }
+
+      SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
+      simpleMailMessage.setTo(user1.getEmail());
+      simpleMailMessage.setFrom("kunalpawar9970@gmail.com");
+      simpleMailMessage.setSubject("Account Information And Credentials");
+      simpleMailMessage.setText("Welcome to Arthagam Urban Nidhi. As requested, here are your account credentials:" +
+              "Username : "+user1.getUserMobNo()+
+              "Password : "+tempPassword+" " +
+              "Please use the provided credentials to log in to your account. Upon your first login, you will be prompted to change your password for security purposes." +
+              "Your "+accountTypeName+" account number is : "+accountNumber+ "Please keep this information secure and do not share it with anyone else." +
+              " If you have any questions or need assistance, feel free to contact our support team");
+      simpleMailMessage.setSentDate(new Date());
+      mailSender.send(simpleMailMessage);
+      System.out.println("mail send");
     }
 
     return new ResponseEntity(registrationResponse, HttpStatus.OK);
@@ -487,14 +521,14 @@ public class AuthController {
     return new ResponseEntity(user, HttpStatus.OK);
   }
 
-  @PutMapping("/createkyc")
+  @PostMapping("/createkyc")
   public ResponseEntity create(@RequestBody KYCRequest kycRequest) {
-    KYCResponse kycResponse = this.userMasterService.createKyc(kycRequest);
+    MainResDto mainResDto = this.userMasterService.createKyc(kycRequest);
 
-    if (kycResponse != null) {
-      return new ResponseEntity(kycResponse, HttpStatus.OK);
+    if (mainResDto != null) {
+      return new ResponseEntity(mainResDto, HttpStatus.OK);
     } else {
-      return new ResponseEntity(kycResponse, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity(mainResDto, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -598,4 +632,16 @@ public class AuthController {
       return new ResponseEntity(kycDetailsResponse, HttpStatus.BAD_REQUEST);
     }
   }
+
+  @GetMapping("/getuserslistaddedbyadmin/{id}")
+  public ResponseEntity getUsersListAddedByAdmin(@PathVariable("id") Long id){
+    List<UserRes> list = this.userMasterService.getUsersListAddedByAdmin(id);
+
+    if (list!=null){
+      return new ResponseEntity(list, HttpStatus.OK);
+    }else {
+      return new ResponseEntity(list, HttpStatus.BAD_REQUEST);
+    }
+  }
+
 }

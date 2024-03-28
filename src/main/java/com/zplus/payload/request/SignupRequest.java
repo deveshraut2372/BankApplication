@@ -13,6 +13,8 @@ public class SignupRequest {
 
     private Long id;
 
+    private Long managementId;
+
     private List<AccountTypeIdsRequest> accountTypeIds;
 
     private String email;
