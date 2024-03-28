@@ -45,8 +45,6 @@ public class User {
 	@Column
 	private String userMobNo;
 
-	private String bAccountNumber;
-
 	@Column
 	private String status;
 

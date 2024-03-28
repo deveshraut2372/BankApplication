@@ -15,8 +15,6 @@ public class KYCRequest {
 
     private String userMobNo;
 
-    private String bAccountNumber;
-
     private String gender;
 
     private Date dateOfBirth;
