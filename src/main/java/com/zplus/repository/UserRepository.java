@@ -19,8 +19,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUserMobNo(String userMobNo);
 
-    @Query("select new com.zplus.payload.response.UserRes(um.id, um.email,um.password,um.userMobNo,um.address,um.status,um.fullName,um.age,um.gender,um.dateOfBirth,um.nomineeFullName,um.nomineeAge,um.nomineeGender,um.nomineeMobileNumber,um.nomineeDateOfBirth,um.photo,um.otherAddress,um.villageAddress,um.occupation,um.officeAddress,um.panNo,um.aadhaarCardNo,um.propertyType,um.referenceName,um.referenceMobile,um.registrationDate) from User as um where um.id=:id")
-    UserRes getUserByUserId(@Param("id") Long id);
+    @Query("select new com.zplus.payload.response.ProfileResponse(um.id, um.email,um.userMobNo,um.fullName) from User as um where um.id=:id")
+    ProfileResponse getUserByUserId(@Param("id") Long id);
 
   @Query("select um.fcmTokenString as fcmTokenString from User as um where um.id=:id")
   String getToken(@Param("id") Long id);

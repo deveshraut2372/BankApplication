@@ -11,7 +11,7 @@ public interface UserMasterService {
 
     List<UserRes> getAllUser(String role);
 
-    UserRes getUserByUserId(Long id);
+    ProfileResponse getUserByUserId(Long id);
 
     UpdateUserResponse updateUser(UpdateUserRequest updateUserRequest);
 

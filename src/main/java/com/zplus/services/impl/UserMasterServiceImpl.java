@@ -56,13 +56,12 @@ public class UserMasterServiceImpl implements UserMasterService {
 
 
     @Override
-    public UserRes getUserByUserId(Long id) {
-        UserRes userRes=userRepository.getUserByUserId(id);
-        if (userRes!=null){
-            return userRes;
+    public ProfileResponse getUserByUserId(Long id) {
+        ProfileResponse profileResponse =userRepository.getUserByUserId(id);
+        if (profileResponse!=null){
+            return profileResponse;
         }else {
-            return new UserRes(null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
-                    null,null,null,null,null,null,null,null,null);
+            return new ProfileResponse(null,null,null,null);
         }
     }
 

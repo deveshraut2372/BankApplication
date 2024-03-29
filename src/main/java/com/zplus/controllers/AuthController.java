@@ -59,6 +59,8 @@ public class AuthController {
   private UserBankAccountRepository userBankAccountRepository;
 
 
+   AccountNumberGeneration accountNumberGeneration=new AccountNumberGeneration();
+
   @Autowired
   PasswordEncoder encoder;
 
@@ -225,6 +227,8 @@ public class AuthController {
       }
     }
 
+    // if condition if role is not admin kyc create
+
     System.out.println(roles);
     user.setRoles(roles);
     user.setRegistrationDate(new Date());
@@ -254,15 +258,15 @@ public class AuthController {
         if (accountTypeMaster1 != null) {
           System.out.println("HI HI");
           UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
-          Integer userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
-          String userBankAccountNumber = String.valueOf(userBankNumber);
+          String userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+          String userBankAccountNumber = userBankNumber;
 
           if (userBankAccountNumber.length() == 1) {
             userBankAccountNumber = "AUNLT0000000" + userBankAccountNumber;
             System.out.println("userBankAccountNumber1 1 = " + userBankAccountNumber);
             UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT0000000" + userBankAccountNumber;
             }
@@ -272,7 +276,7 @@ public class AuthController {
             System.out.println("userBankAccountNumber 2 2 = " + userBankAccountNumber);
             UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT000000" + userBankAccountNumber;
             }
@@ -284,7 +288,7 @@ public class AuthController {
             System.out.println("userBankAccountNumber4 4  = " + userBankAccountNumber);
             UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
             }
@@ -294,7 +298,7 @@ public class AuthController {
             System.out.println("userBankAccountNumber4 4  = " + userBankAccountNumber);
             UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
             }
@@ -304,7 +308,7 @@ public class AuthController {
             System.out.println("userBankAccountNumber5 5  = " + userBankAccountNumber);
             UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT000" + userBankAccountNumber;
             }
@@ -314,7 +318,7 @@ public class AuthController {
             System.out.println("userBankAccountNumber6 6  = " + userBankAccountNumber);
             UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT00" + userBankAccountNumber;
             }
@@ -324,7 +328,7 @@ public class AuthController {
             System.out.println("userBankAccountNumber7 7 = " + userBankAccountNumber);
             UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT0" + userBankAccountNumber;
             }
@@ -334,7 +338,7 @@ public class AuthController {
             System.out.println("userBankAccountNumber 8 8 = " + userBankAccountNumber);
             UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT" + userBankAccountNumber;
             }
@@ -347,7 +351,7 @@ public class AuthController {
             System.out.println("userBankAccountMaster1 = =  8 8 8 8 " + userBankAccountMaster1);
 
             if (userBankAccountMaster1 != null) {
-              userBankNumber = AccountNumberGeneration.bankAccountNumberGenerator();
+              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
               userBankAccountNumber = String.valueOf(userBankNumber);
               userBankAccountNumber = "AUNLT" + userBankAccountNumber;
             }
@@ -378,8 +382,11 @@ public class AuthController {
       simpleMailMessage.setFrom("kunalpawar9970@gmail.com");
       simpleMailMessage.setSubject("Account Information And Credentials");
       simpleMailMessage.setText("Welcome to Arthagam Urban Nidhi. As requested, here are your account credentials:" +
+
+
               "Username : "+user1.getUserMobNo()+
               "Password : "+tempPassword+" " +
+
               "Please use the provided credentials to log in to your account. Upon your first login, you will be prompted to change your password for security purposes." +
               "Your "+accountTypeName+" account number is : "+accountNumber+ "Please keep this information secure and do not share it with anyone else." +
               " If you have any questions or need assistance, feel free to contact our support team");
@@ -434,13 +441,13 @@ public class AuthController {
 
   @GetMapping(value = "/getuserbyid/{id}")
   public ResponseEntity getUserByUserId(@PathVariable("id") Long id) {
-    UserRes userRes = new UserRes();
-    userRes = userMasterService.getUserByUserId(id);
+    ProfileResponse profileResponse = new ProfileResponse();
+    profileResponse = userMasterService.getUserByUserId(id);
 
-    if (userRes != null) {
-      return new ResponseEntity(userRes, HttpStatus.OK);
+    if (profileResponse != null) {
+      return new ResponseEntity(profileResponse, HttpStatus.OK);
     } else {
-      return new ResponseEntity(userRes, HttpStatus.BAD_REQUEST);
+      return new ResponseEntity(profileResponse, HttpStatus.BAD_REQUEST);
     }
   }
 

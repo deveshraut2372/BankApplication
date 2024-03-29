@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserBankAccountRepository extends JpaRepository<UserBankAccountMaster,Integer> {
@@ -21,4 +22,9 @@ public interface UserBankAccountRepository extends JpaRepository<UserBankAccount
 
     @Query("select ubam from UserBankAccountMaster as ubam where ubam.user.id=:id ")
     List<UserBankAccountMaster> findByIdUserId(@Param("id") Long id);
+
+    @Query("select count(ubam.userBankAccountId) from UserBankAccountMaster as ubam where ubam.userBankAccountNumber=:userBankAccountNumber")
+    Integer getcountByUserBankAccountNumber(@Param("userBankAccountNumber") String bankAccountNumber);
+
+    boolean existsByUserBankAccountNumber(String bankAccountNumber);
 }
