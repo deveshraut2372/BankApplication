@@ -3,9 +3,8 @@ package com.zplus.models;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.rmi.server.UID;
+
 import java.util.Date;
-import java.util.UUID;
 
 @Data
 @Entity

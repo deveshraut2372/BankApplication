@@ -244,158 +244,188 @@ public class AuthController {
     String tempPassword = name+pass;
     User user1 = userRepository.save(user);
 
-    List<AccountTypeIdsRequest> list = signUpRequest.getAccountTypeIds();
-    System.out.println(list);
-    if (list != null) {
-      for (AccountTypeIdsRequest accountTypeId : signUpRequest.getAccountTypeIds()) {
-        AccountTypeMaster accountTypeMaster = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
-        UserAccountMaster userAccountMaster = new UserAccountMaster();
-        userAccountMaster.setUser(user1);
-        userAccountMaster.setAccountTypeMaster(accountTypeMaster);
-        userAccountMasterDao.save(userAccountMaster);
+    if (user1.getRoles().stream().findFirst().get().getName().name().equalsIgnoreCase("User")){
+      List<AccountTypeIdsRequest> list = signUpRequest.getAccountTypeIds();
+      System.out.println(list);
+      if (list != null) {
+        for (AccountTypeIdsRequest accountTypeId : signUpRequest.getAccountTypeIds()) {
+          AccountTypeMaster accountTypeMaster = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
+          UserAccountMaster userAccountMaster = new UserAccountMaster();
+          userAccountMaster.setUser(user1);
+          userAccountMaster.setAccountTypeMaster(accountTypeMaster);
+          userAccountMasterDao.save(userAccountMaster);
 
-        AccountTypeMaster accountTypeMaster1 = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
-        if (accountTypeMaster1 != null) {
-          System.out.println("HI HI");
-          UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
-          String userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-          String userBankAccountNumber = userBankNumber;
+          AccountTypeMaster accountTypeMaster1 = this.accountTypeRepository.findById(accountTypeId.getAccountTypeId()).get();
+          if (accountTypeMaster1 != null) {
+            System.out.println("HI HI");
+            UserBankAccountMaster userBankAccountMaster = new UserBankAccountMaster();
+            String userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+            String userBankAccountNumber = userBankNumber;
 
-          if (userBankAccountNumber.length() == 1) {
-            userBankAccountNumber = "AUNLT0000000" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber1 1 = " + userBankAccountNumber);
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+            if (userBankAccountNumber.length() == 1) {
               userBankAccountNumber = "AUNLT0000000" + userBankAccountNumber;
-            }
-          } else if (userBankAccountNumber.length() == 2) {
-            System.out.println("HI2");
-            userBankAccountNumber = "AUNLT000000" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber 2 2 = " + userBankAccountNumber);
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+              System.out.println("userBankAccountNumber1 1 = " + userBankAccountNumber);
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT0000000" + userBankAccountNumber;
+              }
+            } else if (userBankAccountNumber.length() == 2) {
+              System.out.println("HI2");
               userBankAccountNumber = "AUNLT000000" + userBankAccountNumber;
-            }
-          } else if (userBankAccountNumber.length() == 3) {
-            System.out.println("HI3");
-            userBankAccountNumber = "AUNLT00000" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber3 3  = " + userBankAccountNumber);
-            userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber4 4  = " + userBankAccountNumber);
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+              System.out.println("userBankAccountNumber 2 2 = " + userBankAccountNumber);
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT000000" + userBankAccountNumber;
+              }
+            } else if (userBankAccountNumber.length() == 3) {
+              System.out.println("HI3");
+              userBankAccountNumber = "AUNLT00000" + userBankAccountNumber;
+              System.out.println("userBankAccountNumber3 3  = " + userBankAccountNumber);
               userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
-            }
-          } else if (userBankAccountNumber.length() == 4) {
-            System.out.println("HI4");
-            userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber4 4  = " + userBankAccountNumber);
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+              System.out.println("userBankAccountNumber4 4  = " + userBankAccountNumber);
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
+              }
+            } else if (userBankAccountNumber.length() == 4) {
+              System.out.println("HI4");
               userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
-            }
-          } else if (userBankAccountNumber.length() == 5) {
-            System.out.println("HI5");
-            userBankAccountNumber = "AUNLT000" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber5 5  = " + userBankAccountNumber);
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+              System.out.println("userBankAccountNumber4 4  = " + userBankAccountNumber);
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT0000" + userBankAccountNumber;
+              }
+            } else if (userBankAccountNumber.length() == 5) {
+              System.out.println("HI5");
               userBankAccountNumber = "AUNLT000" + userBankAccountNumber;
-            }
-          } else if (userBankAccountNumber.length() == 6) {
-            System.out.println("HI6");
-            userBankAccountNumber = "AUNLT00" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber6 6  = " + userBankAccountNumber);
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+              System.out.println("userBankAccountNumber5 5  = " + userBankAccountNumber);
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT000" + userBankAccountNumber;
+              }
+            } else if (userBankAccountNumber.length() == 6) {
+              System.out.println("HI6");
               userBankAccountNumber = "AUNLT00" + userBankAccountNumber;
-            }
-          } else if (userBankAccountNumber.length() == 7) {
-            System.out.println("HI7");
-            userBankAccountNumber = "AUNLT0" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber7 7 = " + userBankAccountNumber);
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+              System.out.println("userBankAccountNumber6 6  = " + userBankAccountNumber);
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT00" + userBankAccountNumber;
+              }
+            } else if (userBankAccountNumber.length() == 7) {
+              System.out.println("HI7");
               userBankAccountNumber = "AUNLT0" + userBankAccountNumber;
-            }
-          } else if (userBankAccountNumber.length() == 8) {
-            System.out.println("HI8");
-            userBankAccountNumber = "AUNLT" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber 8 8 = " + userBankAccountNumber);
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+              System.out.println("userBankAccountNumber7 7 = " + userBankAccountNumber);
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT0" + userBankAccountNumber;
+              }
+            } else if (userBankAccountNumber.length() == 8) {
+              System.out.println("HI8");
               userBankAccountNumber = "AUNLT" + userBankAccountNumber;
-            }
-          } else if (userBankAccountNumber.length() == 9) {
-            System.out.println("HI9");
-            userBankAccountNumber = "AUNLT" + userBankAccountNumber;
-            System.out.println("userBankAccountNumber 9 9= " + userBankAccountNumber);
-
-            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
-            System.out.println("userBankAccountMaster1 = =  8 8 8 8 " + userBankAccountMaster1);
-
-            if (userBankAccountMaster1 != null) {
-              userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
-              userBankAccountNumber = String.valueOf(userBankNumber);
+              System.out.println("userBankAccountNumber 8 8 = " + userBankAccountNumber);
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT" + userBankAccountNumber;
+              }
+            } else if (userBankAccountNumber.length() == 9) {
+              System.out.println("HI9");
               userBankAccountNumber = "AUNLT" + userBankAccountNumber;
+              System.out.println("userBankAccountNumber 9 9= " + userBankAccountNumber);
+
+              UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.getByUserBankAccountNumber(userBankAccountNumber);
+              System.out.println("userBankAccountMaster1 = =  8 8 8 8 " + userBankAccountMaster1);
+
+              if (userBankAccountMaster1 != null) {
+                userBankNumber = accountNumberGeneration.bankAccountNumberGenerator();
+                userBankAccountNumber = String.valueOf(userBankNumber);
+                userBankAccountNumber = "AUNLT" + userBankAccountNumber;
+              }
             }
-
-
+            userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
+            userBankAccountMaster.setUser(user1);
+            userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
+            System.out.println("USER BANK ACCOUNT NUMBER ==" + userBankAccountMaster.getUserBankAccountNumber());
+            userBankAccountMaster.setDate(new Date());
+            userBankAccountMaster.setStatus("Active");
+            UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.save(userBankAccountMaster);
+            System.out.println("userBankAccountMaster1 = "+userBankAccountMaster1);
           }
-          userBankAccountMaster.setAccountTypeMaster(accountTypeMaster);
-          userBankAccountMaster.setUser(user1);
-          userBankAccountMaster.setUserBankAccountNumber(userBankAccountNumber);
-          System.out.println("USER BANK ACCOUNT NUMBER ==" + userBankAccountMaster.getUserBankAccountNumber());
-          userBankAccountMaster.setDate(new Date());
-          userBankAccountMaster.setStatus("Active");
-          UserBankAccountMaster userBankAccountMaster1 = this.userBankAccountRepository.save(userBankAccountMaster);
-          System.out.println("userBankAccountMaster1 = "+userBankAccountMaster1);
         }
+
+        List<UserBankAccountMaster> userBankAccountMasters = this.userBankAccountRepository.findByIdUserId(user1.getId());
+        String accountNumber = null;
+        String accountTypeName = null;
+
+        for (UserBankAccountMaster bankAccountMaster : userBankAccountMasters) {
+          accountNumber = bankAccountMaster.getUserBankAccountNumber();
+          accountTypeName = bankAccountMaster.getAccountTypeMaster().getAccountTypeName();
+
+        }
+
+        String Message ="Welcome to Arthagam Urban Nidhi. As requested, here are your account credentials:"
+                +"Username : "+user1.getUserMobNo()+"Password : "+tempPassword+" \n" +
+                getAccounts(user1.getId())+
+                " \n Please use the provided credentials to log in to your account. Upon your first login, you will be prompted to change your password for security purposes." +
+                "Your "+accountTypeName+" account number is : "+accountNumber+ "Please keep this information secure and do not share it with anyone else." +
+                " If you have any questions or need assistance, feel free to contact our support team";
+
+        SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
+        simpleMailMessage.setTo(user1.getEmail());
+        simpleMailMessage.setFrom("kunalpawar9970@gmail.com");
+        simpleMailMessage.setSubject("Account Information And Credentials");
+        simpleMailMessage.setText(Message);
+        simpleMailMessage.setSentDate(new Date());
+        mailSender.send(simpleMailMessage);
+        System.out.println("mail send");
       }
-
-      List<UserBankAccountMaster> userBankAccountMaster = this.userBankAccountRepository.findByIdUserId(user1.getId());
-     String accountNumber = null;
-     String accountTypeName = null;
-      for (UserBankAccountMaster bankAccountMaster : userBankAccountMaster) {
-        accountNumber = bankAccountMaster.getUserBankAccountNumber();
-        accountTypeName = bankAccountMaster.getAccountTypeMaster().getAccountTypeName();
-      }
-
-      SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
-      simpleMailMessage.setTo(user1.getEmail());
-      simpleMailMessage.setFrom("kunalpawar9970@gmail.com");
-      simpleMailMessage.setSubject("Account Information And Credentials");
-      simpleMailMessage.setText("Welcome to Arthagam Urban Nidhi. As requested, here are your account credentials:" +
-
-
-              "Username : "+user1.getUserMobNo()+
-              "Password : "+tempPassword+" " +
-
-              "Please use the provided credentials to log in to your account. Upon your first login, you will be prompted to change your password for security purposes." +
-              "Your "+accountTypeName+" account number is : "+accountNumber+ "Please keep this information secure and do not share it with anyone else." +
-              " If you have any questions or need assistance, feel free to contact our support team");
-      simpleMailMessage.setSentDate(new Date());
-      mailSender.send(simpleMailMessage);
-      System.out.println("mail send");
     }
 
     return new ResponseEntity(registrationResponse, HttpStatus.OK);
+  }
+
+  private String getAccounts(Long id) {
+    List<UserBankAccountMaster> userBankAccountMasters = this.userBankAccountRepository.findByIdUserId(id);
+    String firstAccount =" ";
+    String secondAccount =" ";
+    String thiredAccount =" " ;
+
+
+    System.out.println("userBankAccountMasters ="+userBankAccountMasters.toString());
+
+    System.out.println("  size  of list ="+userBankAccountMasters.size());
+    for (int i=0;i<=userBankAccountMasters.size()-1;i++) {
+      if(userBankAccountMasters.get(i).getAccountTypeMaster().getAccountTypeId()==1)
+      {
+        firstAccount="\n Account Type = "+userBankAccountMasters.get(i).getAccountTypeMaster().getAccountTypeName()+" Account Number ="+userBankAccountMasters.get(i).getUserBankAccountNumber();
+      }
+      if(userBankAccountMasters.get(i).getAccountTypeMaster().getAccountTypeId()==2)
+      {
+        secondAccount="\n Account Type ="+userBankAccountMasters.get(i).getAccountTypeMaster().getAccountTypeName()+" Account Number ="+userBankAccountMasters.get(i).getUserBankAccountNumber();
+      }
+      if(userBankAccountMasters.get(i).getAccountTypeMaster().getAccountTypeId()==3)
+      {
+        thiredAccount="\n Account Type = "+userBankAccountMasters.get(i).getAccountTypeMaster().getAccountTypeName()+" Account Number ="+userBankAccountMasters.get(i).getUserBankAccountNumber();
+      }
+    }
+
+
+    return firstAccount+secondAccount+thiredAccount;
   }
 
   @PostMapping(value = "/forgotPassword")
